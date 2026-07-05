@@ -1,0 +1,19 @@
+[init]
+    defaultBranch = main
+[user]
+    name = jctaoo
+    email = jctaoo@outlook.com
+[core]
+    pager = delta
+[delta]
+    navigate = true  # use n and N to move between diff sections
+    side-by-side = true  # show diffs side by side
+    line-numbers = true  # show line numbers
+    syntax-theme = ansi 
+    detect-dark-light = auto
+    hyperlinks = true
+    hyperlinks-file-link-format = "vscode://file/{path}:{line}"
+[delta "light-bg"]
+    light = true
+[delta "dark-bg"]
+    dark = true
