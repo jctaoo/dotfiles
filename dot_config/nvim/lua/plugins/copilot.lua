@@ -40,6 +40,11 @@ return {
         dismiss = "<Esc>",
       },
     },
+    server_opts_overrides = vim.fn.has "win32" == 1 and {
+      cmd_env = {
+        XDG_CONFIG_HOME = vim.fn.expand "$LOCALAPPDATA",
+      },
+    } or nil,
   },
   specs = {
     {
