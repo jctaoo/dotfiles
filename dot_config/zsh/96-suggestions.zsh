@@ -18,20 +18,23 @@ zstyle ':completion:*' cache-path "${XDG_CACHE_HOME:-$HOME/.cache}/zsh/compcache
 # ==========================================
 # 智能历史记录提示 zsh-autosuggestions
 # ==========================================
-if [ -f /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh ]; then
-  # 如果历史记录里匹配不到，它会调用 Zsh 的补全引擎，
-  # 自动用当前目录下的文件名或命令来生成灰色虚影提示！
-  ZSH_AUTOSUGGEST_STRATEGY=(history completion)
+: "${ZSH_PLUGIN_PREFIX:=}"
+local autosuggestions_path="${ZSH_PLUGIN_PREFIX}/zsh-autosuggestions/zsh-autosuggestions.zsh"
 
-  # 【性能优化】防止长命令卡顿
-  # 当你粘贴长达几百个字符的命令或代码时，停止实时计算建议，避免终端卡死
-  ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=20
- 
-  source /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh 
-  
-  # 自定义颜色
-  export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=242'
+if [ -n "$ZSH_PLUGIN_PREFIX" ] && [ -f "$autosuggestions_path" ]; then
+    # 如果历史记录里匹配不到，它会调用 Zsh 的补全引擎，
+    # 自动用当前目录下的文件名或命令来生成灰色虚影提示！
+    ZSH_AUTOSUGGEST_STRATEGY=(history completion)
 
-  # 快捷键 —— 快速接受建议
-  bindkey '^ ' autosuggest-accept
+    # 【性能优化】防止长命令卡顿
+    # 当你粘贴长达几百个字符的命令或代码时，停止实时计算建议，避免终端卡死
+    ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=20
+
+    source "$autosuggestions_path"
+
+    # 自定义颜色
+    export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=242'
+
+    # 快捷键 —— 快速接受建议
+    bindkey '^ ' autosuggest-accept
 fi

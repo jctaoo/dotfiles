@@ -1,3 +1,9 @@
+# ~/.local/share/chezmoi/.chezmoi.toml.tmpl
+# Auto-generates ~/.config/chezmoi/chezmoi.toml during `chezmoi init`.
+# Uses promptStringOnce: prompts only if the value is not already set.
+
+{{- /* ===== Tool configuration (preserve existing settings) ===== */}}
+
 [diff]
     command = "delta"
 
@@ -8,9 +14,15 @@
 [edit]
     command = "nvim"
 
+{{- /* ===== User data: prompted during `chezmoi init` ===== */}}
+
 {{- $git_name := promptStringOnce . "git_name" "Git user name" -}}
 {{- $git_email := promptStringOnce . "git_email" "Git email address" -}}
+{{- $git_signingkey := promptStringOnce . "git_signingkey" "Git signing key (optional, press Enter to skip)" }}
+{{- $wezterm_windows_home := promptStringOnce . "wezterm_windows_home" "WezTerm default workspace directory on Windows (e.g. D:\\Work)" }}
 
 [data]
     git_name = {{ $git_name | quote }}
     git_email = {{ $git_email | quote }}
+    git_signingkey = {{ $git_signingkey | quote }}
+    wezterm_windows_home = {{ $wezterm_windows_home | quote }}

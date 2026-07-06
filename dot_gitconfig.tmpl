@@ -2,7 +2,10 @@
     defaultBranch = main
 [user]
     name = {{ .git_name | quote }}
-    email = {{ .git_email | quote }} 
+    email = {{ .git_email | quote }}
+{{- if .git_signingkey }}
+    signingkey = {{ .git_signingkey | quote }}
+{{- end }}
 [core]
     pager = delta
 [delta]
