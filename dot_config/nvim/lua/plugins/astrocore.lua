@@ -18,6 +18,9 @@ return {
           nested = true,
           callback = function()
             if vim.fn.argc(-1) == 0 then
+              if vim.g.vscode then
+                return
+              end
               require("resession").load(vim.fn.getcwd(), { dir = "dirsession", silence_errors = true })
             end
           end,

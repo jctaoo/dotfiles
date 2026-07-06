@@ -84,7 +84,27 @@ local function setup_word_check()
   vim.opt.spell = true
 end
 
+-- Configure for github copilot plugin
+local function setup_copilot_auth()
+  local copilot_auth_group = vim.api.nvim_create_augroup("CopilotPolishAuth", { clear = true })
+
+  vim.api.nvim_create_autocmd("VimEnter", {
+    group = copilot_auth_group,
+    callback = function()
+      -- 此时插件已完全加载，直接安全调用命令
+      pcall(vim.cmd, "Copilot auth")
+    end,
+  })
+end
+
+patch_vim_ui_open()
+
+if vim.g.vscode then
+  return
+end
+
+-- Terminal specified
 setup_reset_terminal_palette()
 setup_smart_comment_newline()
-patch_vim_ui_open()
 setup_word_check()
+setup_copilot_auth()
