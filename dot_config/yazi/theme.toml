@@ -1,0 +1,9 @@
+[flavor]
+dark = "catppuccin-mocha"
+light = "catppuccin-latte"
+
+[icon]
+prepend_exts = [
+    { name = "heic", text = "", fg = "#ff9e64" },
+    { name = "heif", text = "", fg = "#ff9e64" },
+]

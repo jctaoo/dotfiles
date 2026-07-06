@@ -1,0 +1,66 @@
+#!/usr/bin/env bash
+# super-clean —— A script to clean up orphan packages, pacman cache, and yay AUR build cache on Arch Linux.   
+
+set -euo pipefail
+
+KEEP=2
+DRY_RUN=0
+
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        -n|--dry-run) DRY_RUN=1 ;;
+        *) echo "Unknown option: $1" >&2; exit 2 ;;
+    esac
+    shift
+done
+
+run() {
+    if [[ "$DRY_RUN" -eq 1 ]]; then
+        echo "  [dry-run] $*"
+    else
+        "$@"
+    fi
+}
+
+echo "=== [0/3] Environment check ==="
+for cmd in pacman sudo paccache yay; do
+    if command -v "$cmd" >/dev/null 2>&1; then
+        echo "  [OK]      $cmd -> $(command -v "$cmd")"
+    else
+        echo "  [MISSING] $cmd"
+    fi
+done
+if ! command -v pacman >/dev/null 2>&1; then
+    echo "FATAL: pacman is required. Aborting." >&2
+    exit 1
+fi
+
+echo ""
+echo "=== [1/3] Removing orphan packages ==="
+orphans=$(pacman -Qdtq 2>/dev/null) || orphans=""
+if [[ -n "$orphans" ]]; then
+    run sudo pacman -Rns --noconfirm $orphans
+else
+    echo "No orphan packages found."
+fi
+
+echo ""
+echo "=== [2/3] Cleaning pacman cache with paccache (keeping last $KEEP versions) ==="
+if command -v paccache >/dev/null 2>&1; then
+    run sudo paccache -rk"$KEEP" || true
+    echo "-- Removing all cached versions of uninstalled packages --"
+    run sudo paccache -ruk0 || true
+else
+    echo "paccache not found. Install pacman-contrib: sudo pacman -S pacman-contrib"
+fi
+
+echo ""
+echo "=== [3/3] Cleaning yay AUR build cache (pacman cache untouched) ==="
+if command -v yay >/dev/null 2>&1; then
+    run yay -Sc --aur --noconfirm
+else
+    echo "yay not found, skipping AUR cache cleanup."
+fi
+
+echo ""
+echo "=== Cleanup complete ==="

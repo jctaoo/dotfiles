@@ -1,0 +1,166 @@
+#!/usr/bin/env bash
+# open.sh — cross-platform 'open'
+# Behaviour like macOS open: launch file/dir/URL with system default handler.
+# Non-blocking (orphan) on Linux, macOS, Windows-WSL, and MSYS2/Git Bash.
+# No third-party tools; only system built-ins are used:
+#   macOS:        open
+#   Linux:        xdg-open / gio
+#   WSL:          explorer.exe (falls back to powershell.exe)
+#                 path translation via wslpath -w (WSL built-in)
+#   MSYS2/Git Bash: cmd.exe /c start
+#
+# Usage: open <file|dir|url> [...]
+
+set -euo pipefail
+
+usage() {
+    cat <<'EOF' >&2
+Usage: open <file|dir|url> [...]
+       open -h | --help
+
+Cross-platform open: launches each target with the system default handler,
+detached from the current shell (orphan / non-blocking).
+
+Supported environments:
+  macOS            open
+  Linux            xdg-open (falls back to gio open)
+  WSL              explorer.exe (falls back to powershell.exe Start-Process)
+  MSYS2 / Git Bash cmd.exe /c start
+
+Exit codes:
+  0   all targets opened successfully
+  1   one or more targets failed to open
+  2   usage error (no operands, or invalid option)
+EOF
+    exit 2
+}
+
+has() { command -v "$1" >/dev/null 2>&1; }
+
+# Is this a WSL (Windows Subsystem for Linux) environment?
+is_wsl() {
+    [ -n "${WSL_DISTRO_NAME:-}" ] && return 0
+    [ -f /proc/version ] && grep -qiE 'microsoft|wsl' /proc/version 2>/dev/null && return 0
+    return 1
+}
+
+# Convert a WSL/Linux path into a Windows path suitable for explorer.exe.
+# URLs are passed through untouched. Non-existent paths return an error,
+# because explorer.exe silently falls back to the default folder ("Documents")
+# when handed an unrecognised path rather than reporting it.
+to_win_path() {
+    local t=$1
+    case "$t" in
+        http://*|https://*|ftp://*|mailto:*)
+            printf '%s' "$t"; return ;;
+    esac
+    if [ ! -e "$t" ]; then
+        printf 'open: %s: No such file or directory\n' "$t" >&2
+        return 1
+    fi
+    wslpath -w "$t" 2>/dev/null || printf '%s' "$t"
+}
+
+# Launch a command detached from the calling shell (orphan).
+launch() {
+    nohup "$@" </dev/null >/dev/null 2>&1 &
+}
+
+# Open a single target via the OS default handler.
+open_one() {
+    local target=$1 os=$2
+    case "$os" in
+        macos)
+            launch open "$target"
+            ;;
+        msys)
+            # `start` is a cmd.exe builtin; first "" is the title placeholder.
+            launch cmd.exe //c start "" "$target"
+            ;;
+        linux)
+            if is_wsl; then
+                local win_path
+                win_path=$(to_win_path "$target") || return 1
+                if has explorer.exe; then
+                    launch explorer.exe "$win_path"
+                elif has powershell.exe; then
+                    launch powershell.exe -NoProfile -Command \
+                        "Start-Process -FilePath '$win_path'"
+                else
+                    printf 'open: WSL detected but no explorer.exe/powershell.exe found\n' >&2
+                    return 1
+                fi
+            elif has xdg-open; then
+                launch xdg-open "$target"
+            elif has gio; then
+                launch gio open "$target"
+            else
+                printf 'open: no xdg-open or gio on this system\n' >&2
+                return 1
+            fi
+            ;;
+    esac
+}
+
+main() {
+    local targets=()
+    local end_of_opts=0
+    local arg
+
+    for arg in "$@"; do
+        if [ "$end_of_opts" -eq 1 ]; then
+            targets+=("$arg")
+            continue
+        fi
+        case "$arg" in
+            --)
+                end_of_opts=1
+                ;;
+            -h|--help)
+                usage
+                ;;
+            --*)
+                printf 'open: invalid option -- %s\n' "${arg#--}'" >&2
+                printf "Try 'open --help' for more information.\n" >&2
+                exit 2
+                ;;
+            -*)
+                printf 'open: invalid option -- %s\n' "$arg" >&2
+                printf "Try 'open --help' for more information.\n" >&2
+                exit 2
+                ;;
+            *)
+                targets+=("$arg")
+                ;;
+        esac
+    done
+
+    if [ ${#targets[@]} -eq 0 ]; then
+        printf 'open: missing operand\n' >&2
+        printf "Try 'open --help' for more information.\n" >&2
+        exit 2
+    fi
+
+    local os
+    case "$(uname -s)" in
+        Darwin*)              os=macos ;;
+        MINGW*|MSYS*|CYGWIN*) os=msys  ;;
+        *)                    os=linux ;;
+    esac
+
+    local rc=0
+    local target
+    for target in "${targets[@]}"; do
+        open_one "$target" "$os" || rc=1
+    done
+    exit $rc
+}
+
+if ps -o comm= -p $PPID | grep -q sshd; then
+    # If the parent process is sshd, we are likely running in a remote SSH session.
+    # In this case, we should not attempt to open GUI applications on the remote host,
+    # as it will not work and may cause errors. Instead, we can print a message and exit.
+    printf 'open: cannot open targets in a remote SSH session\n' >&2
+    exit 1
+fi
+main "$@"

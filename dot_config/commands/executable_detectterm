@@ -1,0 +1,110 @@
+#!/usr/bin/env python3
+"""Detect terminal light/dark theme via OSC 11 (background color query).
+
+Pipe-friendly: the OSC query/answer exchange goes through /dev/tty
+(the controlling terminal), while the result is printed to stdout so it
+can be piped (e.g. `python osc11_theme.py | grep light`).
+
+Exit codes:
+    0  -> light
+    1  -> dark
+    2  -> unknown (no controlling terminal / no OSC 11 response)
+"""
+
+import os
+import re
+import sys
+import select
+import termios
+import tty
+
+# ESC ] 11 ; ? ST   -> terminal replies with: ESC ] 11 ; rgb:RRRR/GGGG/BBBB ST
+OSC_QUERY = "\033]11;?\033\\"
+
+
+def read_response(timeout=0.6):
+    """Open /dev/tty, send OSC 11 query, read the reply with a timeout."""
+    tty_fd = os.open("/dev/tty", os.O_RDWR)
+    try:
+        old = termios.tcgetattr(tty_fd)
+        try:
+            tty.setraw(tty_fd)
+            os.write(tty_fd, OSC_QUERY.encode("utf-8"))
+
+            data = b""
+            r, _, _ = select.select([tty_fd], [], [], timeout)
+            if not r:
+                return ""
+            while True:
+                r, _, _ = select.select([tty_fd], [], [], 0.05)
+                if not r:
+                    break
+                try:
+                    chunk = os.read(tty_fd, 1024)
+                except OSError:
+                    break
+                if not chunk:
+                    break
+                data += chunk
+            return data.decode("utf-8", "replace")
+        finally:
+            termios.tcsetattr(tty_fd, termios.TCSADRAIN, old)
+    finally:
+        os.close(tty_fd)
+
+
+def parse_bg_color(response):
+    """Extract (r, g, b) in 0-255 from an OSC 11 response string."""
+    m = re.search(
+        r"rgb:([0-9a-fA-F]{1,4})[:/]([0-9a-fA-F]{1,4})[:/]([0-9a-fA-F]{1,4})",
+        response,
+    )
+    if not m:
+        return None
+
+    def norm(hexstr):
+        maxval = int("F" * len(hexstr), 16)
+        return int(hexstr, 16) * 255 // maxval if maxval else 0
+
+    return norm(m.group(1)), norm(m.group(2)), norm(m.group(3))
+
+
+def relative_luminance(rgb):
+    """WCAG relative luminance (0..1)."""
+    r, g, b = [c / 255.0 for c in rgb]
+
+    def lin(c):
+        return c / 12.92 if c <= 0.03928 else ((c + 0.055) / 1.055) ** 2.4
+
+    return 0.2126 * lin(r) + 0.7152 * lin(g) + 0.0722 * lin(b)
+
+
+def detect(theme_threshold=0.5):
+    """Return (theme, rgb, raw_response). theme is 'light', 'dark', or None."""
+    try:
+        resp = read_response()
+    except OSError:
+        return None, None, ""  # no controlling terminal
+    rgb = parse_bg_color(resp)
+    if rgb is None:
+        return None, None, resp
+    lum = relative_luminance(rgb)
+    theme = "light" if lum > theme_threshold else "dark"
+    return theme, rgb, resp
+
+
+def main():
+    theme, rgb, raw = detect()
+    if theme is None:
+        if raw:
+            print("unknown (raw: %r)" % raw, file=sys.stderr)
+        else:
+            print("unknown (no controlling terminal / no OSC 11 response)",
+                  file=sys.stderr)
+        sys.exit(2)
+    print(theme)
+    sys.exit(0 if theme == "light" else 1)
+
+
+if __name__ == "__main__":
+    main()

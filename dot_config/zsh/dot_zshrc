@@ -1,0 +1,27 @@
+# zsh configuration files are split into {weight}-{name}.zsh files in this directory.
+# The main .zshrc file sources them in order of weight, so that lower weight files are sourced first.
+# This allows you to override settings from lower weight files in higher weight files.
+
+# TODO: manging by chezmoi
+PATH="$HOME/.config/commands:$PATH"
+
+for config_file in "$ZDOTDIR"/*.zsh; do
+    [[ -r "$config_file" ]] && source "$config_file"
+done
+unset config_file
+
+# ==========================================
+# WezTerm 官方 Shell 集成 (处理 OSC 7 路径同步等)
+# ==========================================
+# 优先加载 WezTerm 官方脚本来保证新开 Tab 保持路径 (OSC 7) 的完美运行
+if [ -f $HOME/.config/wezterm/wezterm.sh ]; then
+  source $HOME/.config/wezterm/wezterm.sh
+fi
+
+# ==========================================
+# Starship 提示符初始化
+# ==========================================
+# Starship 必须放在文件的最后加载，它会自动兼容并保留前面的钩子
+if command -v starship &>/dev/null; then
+  eval "$(starship init zsh)"
+fi

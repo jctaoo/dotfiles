@@ -1,0 +1,108 @@
+{
+  "$schema": "https://github.com/fastfetch-cli/fastfetch/raw/master/doc/json_schema.json",
+  // "logo": {
+  //   "type": "builtin",
+  //   "source": "windows"
+  // },
+  "display": {
+    "separator": "  ",
+    "brightColor": false,
+    "color": {
+      "keys": "blue",
+      "title": "magenta",
+      "separator": "blue",
+      "output": "default"
+    },
+    "key": {
+      "type": "both",
+      "width": 30
+    },
+    "bar": {
+      "width": 10,
+      "char": {
+        "elapsed": "━",
+        "total": "─"
+      }
+    },
+    "percent": {
+      "type": 3
+    }
+  },
+  "modules": [
+    "title",
+    "separator",
+    "os",
+    {
+      "type": "host",
+      "format": "{vendor} {name}"
+    },
+    "kernel",
+    "packages",
+    "shell",
+    "display",
+    "de",
+    "terminal",
+    "cpu",
+    {
+      "type": "gpu",
+      "hideType": "unknown",
+      "driverSpecific": true,
+      "format": "{name} ({dedicated-total} VRAM, {shared-total} shared, {type})"
+    },
+    {
+      "type": "memory",
+      "keyIcon": ""
+    },
+    "swap",
+    {
+      "type": "disk",
+      "folders": [
+        "C:\\",
+        "D:\\",
+        "/",
+        "/home",
+        "/mnt",
+        // for wsl mnt
+        "/mnt/c",
+        "/mnt/d"
+      ],
+      "format": "{size-percentage-bar} {size-used} / {size-total} {size-percentage} - {filesystem}"
+    },
+    {
+      "type": "localip",
+      "namePrefix": "以太网",
+      "defaultRouteOnly": false,
+      "showIpv4": true,
+      "showIpv6": false,
+      "showPrefixLen": true
+    },
+    {
+      "type": "localip",
+      "namePrefix": "eth1",
+      "defaultRouteOnly": false,
+      "showIpv4": true,
+      "showIpv6": false,
+      "showPrefixLen": true
+    },
+    {
+      "type": "localip",
+      "nameprefix": "ens",
+      "defaultrouteonly": false,
+      "showipv4": true,
+      "showipv6": false,
+      "showprefixlen": true
+    },
+    {
+      "type": "localip",
+      "nameprefix": "enp",
+      "defaultrouteonly": false,
+      "showipv4": true,
+      "showipv6": false,
+      "showprefixlen": true
+    },
+    "battery",
+    "poweradapter",
+    "locale",
+    "uptime",
+  ]
+}
