@@ -1,0 +1,100 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+echo "==> Updating system..."
+sudo apt update && sudo apt upgrade -y
+
+echo "==> Installing apt packages..."
+sudo apt install -y \
+  build-essential \
+  zsh \
+  zsh-autosuggestions \
+  zsh-syntax-highlighting \
+  bat \
+  fd-find \
+  fzf \
+  ripgrep \
+  zoxide \
+  trash-cli \
+  less \
+  git \
+  jq \
+  openssh-client \
+  btop \
+  chafa \
+  imagemagick \
+  libheif-dev \
+  libimage-exiftool-perl \
+  7zip \
+  unzip \
+  fonts-noto-color-emoji \
+  curl \
+  wget \
+  gpg
+
+echo "==> Installing starship..."
+curl -sS https://starship.rs/install.sh | sh -s -- -y
+
+echo "==> Installing eza..."
+sudo mkdir -p /etc/apt/keyrings
+wget -qO- https://raw.githubusercontent.com/eza-community/eza/main/deb.asc | sudo gpg --dearmor -o /etc/apt/keyrings/gierens.gpg
+echo "deb [signed-by=/etc/apt/keyrings/gierens.gpg] http://deb.gierens.de stable main" | sudo tee /etc/apt/sources.list.d/gierens.list
+sudo apt update && sudo apt install -y eza
+
+echo "==> Installing github-cli..."
+(type -p wget >/dev/null || sudo apt install wget -y) && \
+  sudo mkdir -p -m 755 /etc/apt/keyrings && \
+  out=$(wget -qO- https://cli.github.com/packages/githubcli-archive-keyring.gpg) && \
+  echo "$out" | sudo tee /etc/apt/keyrings/githubcli-archive-keyring.gpg > /dev/null && \
+  sudo chmod go+r /etc/apt/keyrings/githubcli-archive-keyring.gpg && \
+  echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null && \
+  sudo apt update && sudo apt install gh -y
+
+echo "==> Installing git-delta..."
+DELTA_VER=$(curl -s https://api.github.com/repos/dandavison/delta/releases/latest | grep tag_name | cut -d'"' -f4)
+wget "https://github.com/dandavison/delta/releases/download/${DELTA_VER}/git-delta_${DELTA_VER#v}_amd64.deb" -O /tmp/git-delta.deb
+sudo dpkg -i /tmp/git-delta.deb && rm /tmp/git-delta.deb
+
+echo "==> Installing lazygit..."
+LAZYGIT_VER=$(curl -s https://api.github.com/repos/jesseduffield/lazygit/releases/latest | grep tag_name | cut -d'"' -f4)
+curl -Lo /tmp/lazygit.tar.gz "https://github.com/jesseduffield/lazygit/releases/download/${LAZYGIT_VER}/lazygit_${LAZYGIT_VER#v}_Linux_x86_64.tar.gz"
+sudo tar xf /tmp/lazygit.tar.gz -C /usr/local/bin lazygit && rm /tmp/lazygit.tar.gz
+
+echo "==> Installing uv..."
+curl -LsSf https://astral.sh/uv/install.sh | sh
+export PATH="$HOME/.local/bin:$PATH"
+
+echo "==> Installing yazi..."
+uv tool install yazi
+
+echo "==> Installing fnm..."
+curl -fsSL https://fnm.vercel.app/install | bash
+
+echo "==> Installing fastfetch..."
+FASTFETCH_VER=$(curl -s https://api.github.com/repos/fastfetch-cli/fastfetch/releases/latest | grep tag_name | cut -d'"' -f4)
+wget "https://github.com/fastfetch-cli/fastfetch/releases/download/${FASTFETCH_VER}/fastfetch-linux-amd64.tar.gz" -O /tmp/fastfetch.tar.gz
+tar xf /tmp/fastfetch.tar.gz -C /tmp && sudo mv /tmp/fastfetch-linux-amd64/usr/bin/fastfetch /usr/local/bin/ && rm -rf /tmp/fastfetch*
+
+echo "==> Installing glow..."
+echo 'deb [signed-by=/etc/apt/keyrings/charm.gpg] https://repo.charm.sh/apt/ * *' | sudo tee /etc/apt/sources.list.d/charm.list
+curl -fsSL https://repo.charm.sh/apt/gpg.key | sudo gpg --dearmor -o /etc/apt/keyrings/charm.gpg
+sudo apt update && sudo apt install -y glow
+
+echo "==> Installing opencode..."
+curl -fsSL https://opencode.ai/install | sh
+
+echo "==> Installing wezterm..."
+curl -fsSL https://apt.fury.io/wez/gpg.key | sudo gpg --dearmor -o /etc/apt/keyrings/wezterm-fury.gpg
+echo "deb [signed-by=/etc/apt/keyrings/wezterm-fury.gpg] https://apt.fury.io/wez/ * *" | sudo tee /etc/apt/sources.list.d/wezterm.list
+sudo apt update && sudo apt install -y wezterm
+
+echo "==> Installing fonts..."
+mkdir -p ~/.local/share/fonts
+wget -O /tmp/monaspace.zip "https://github.com/ryanoasis/nerd-fonts/releases/latest/download/Monaspace.zip"
+unzip -o /tmp/monaspace.zip -d ~/.local/share/fonts/ && rm /tmp/monaspace.zip
+wget -O /tmp/juliamono.tar.gz "https://github.com/cormullion/juliamono/releases/latest/download/JuliaMono-ttf.tar.gz"
+tar xf /tmp/juliamono.tar.gz -C ~/.local/share/fonts/ && rm /tmp/juliamono.tar.gz
+wget -O ~/.local/share/fonts/LXGWWenKaiMonoScreen-Regular.ttf "https://github.com/lxgw/LxgwWenKai-Screen/releases/latest/download/LXGWWenKaiMonoScreen-Regular.ttf"
+fc-cache -fv
+
+echo "==> Done! Log out and back in, then launch WezTerm."

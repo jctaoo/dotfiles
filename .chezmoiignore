@@ -1,3 +1,6 @@
 # ignore markdown files
 *.md
 *.txt
+
+# ignore install scripts
+install-debian.sh

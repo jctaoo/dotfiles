@@ -1,23 +1,12 @@
-# Recommended Arch Linux packages
-# Source: yay -Qe results plus the recommended terminal wezterm
-# Prerequisite: yay must already be installed
-# Usage:
-#   yay -S --needed - < archpackages.txt
-
-# Base system and build tools
 base
 base-devel
 pacman-contrib
-
-# Shell and terminal environment
 zsh
 zsh-autosuggestions
 zsh-syntax-highlighting
 starship
 chezmoi
 wezterm
-
-# Modern CLI replacements and file tools
 bat
 eza
 fd
@@ -27,8 +16,6 @@ zoxide
 yazi
 trash-cli
 less
-
-# Development tools
 git
 github-cli
 git-delta
@@ -38,12 +25,8 @@ fnm
 uv
 jq
 openssh
-
-# System monitoring and information
 btop
 fastfetch
-
-# Media, documents and compression
 chafa
 glow
 imagemagick
@@ -51,12 +34,8 @@ libheif
 perl-image-exiftool
 7zip
 unzip
-
-# Fonts
 noto-fonts-emoji
 otf-monaspace-nerdfonts
 ttf-juliamono
 ttf-lxgw-wenkai-screen
-
-# AI assistant
 opencode

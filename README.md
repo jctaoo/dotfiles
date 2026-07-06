@@ -33,24 +33,52 @@ These distros are not yet supported:
 
 ## Quick Start
 
+For archlinux:
+
 ```bash
 # 1. Install yay (if not already installed)
 sudo pacman -S --needed git base-devel
 git clone https://aur.archlinux.org/yay-bin.git /tmp/yay-bin
 cd /tmp/yay-bin && makepkg -si && cd -
 
-# 2. Install all recommended packages from this repo
-yay -S --needed - < archpackages.txt
+# 2. Install chezmoi
+yay -S --needed chezmoi
 
 # 3. Install and initialize chezmoi
-chezmoi init https://github.com/YOUR_USERNAME/dotfiles.git
+chezmoi init https://github.com/jctaoo/dotfiles.git
 chezmoi apply
+
+# 4. Install all recommended packages from this repo
+chezmoi cd
+yay -S --needed - < archpackages.txt
+
+# 5. Set default shell to zsh
+chsh -s $(which zsh)
+
+# 6. Log out and back in, launch WezTerm
+```
+
+For Debian / Ubuntu:
+
+```bash
+# 1. Install chezmoi
+sh -c "$(curl -fsLS https://get.chezmoi.io)" -- -b ~/.local/bin
+
+# 2. Initialize and apply dotfiles
+chezmoi init https://github.com/jctaoo/dotfiles.git
+chezmoi apply
+
+# 3. Install all packages (apt + extras)
+chezmoi cd
+bash install-debian.sh
 
 # 4. Set default shell to zsh
 chsh -s $(which zsh)
 
 # 5. Log out and back in, launch WezTerm
 ```
+
+> **Note:** On Debian/Ubuntu, `bat` is installed as `batcat` and `fd` as `fdfind`. The zsh config handles this automatically via aliases.
 
 ---
 
