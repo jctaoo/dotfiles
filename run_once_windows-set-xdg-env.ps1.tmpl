@@ -1,0 +1,15 @@
+{{ if eq .chezmoi.os "windows" -}}
+$ErrorActionPreference = "Stop"
+
+$configHome = Join-Path $env:USERPROFILE ".config"
+
+# XDG Base Directory - 统一配置文件路径到 ~/.config
+[Environment]::SetEnvironmentVariable("XDG_CONFIG_HOME", $configHome, "User")
+
+# Yazi 在 Windows 上不支持 XDG_CONFIG_HOME，需要单独设置
+[Environment]::SetEnvironmentVariable("YAZI_CONFIG_HOME", (Join-Path $configHome "yazi"), "User")
+
+Write-Host "Windows user environment variables set successfully."
+Write-Host "  XDG_CONFIG_HOME = $configHome"
+Write-Host "  YAZI_CONFIG_HOME = $(Join-Path $configHome "yazi")"
+{{ end -}}
