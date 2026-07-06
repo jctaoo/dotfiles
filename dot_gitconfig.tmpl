@@ -1,8 +1,8 @@
 [init]
     defaultBranch = main
 [user]
-    name = jctaoo
-    email = jctaoo@outlook.com
+    name = {{ .git_name | quote }}
+    email = {{ .git_email | quote }} 
 [core]
     pager = delta
 [delta]
