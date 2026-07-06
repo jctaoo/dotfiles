@@ -1,6 +1,6 @@
 local utils = require('utils')
 
-{{- $windows_home := "D:\\Work" }}
+{{- $windows_home := "" }}
 {{- if hasKey . "wezterm_windows_home" }}
 {{- $windows_home = .wezterm_windows_home }}
 {{- end }}
@@ -12,7 +12,13 @@ return function(wezterm, config)
     -- default workspace
     local function default_workspace(args)
         local windows_home = [[{{ $windows_home }}]]
-        local home_dir = is_windows and #windows_home > 0 and windows_home or os.getenv('HOME')
+
+        local home_dir
+        if is_windows then
+            home_dir = #windows_home > 0 and windows_home or os.getenv('USERPROFILE')
+        else
+            home_dir = os.getenv('HOME')
+        end
 
         local tab, build_pane, window = mux.spawn_window {
             workspace = 'default',

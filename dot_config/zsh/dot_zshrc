@@ -2,7 +2,7 @@
 # The main .zshrc file sources them in order of weight, so that lower weight files are sourced first.
 # This allows you to override settings from lower weight files in higher weight files.
 
-PATH="$HOME/.config/commands:$PATH"
+PATH="${XDG_CONFIG_HOME:-$HOME/.config}/commands:$PATH"
 
 for config_file in "$ZDOTDIR"/*.zsh; do
     [[ -r "$config_file" ]] && source "$config_file"
@@ -13,8 +13,8 @@ unset config_file
 # WezTerm 官方 Shell 集成 (处理 OSC 7 路径同步等)
 # ==========================================
 # 优先加载 WezTerm 官方脚本来保证新开 Tab 保持路径 (OSC 7) 的完美运行
-if [ -f $HOME/.config/wezterm/wezterm.sh ]; then
-  source $HOME/.config/wezterm/wezterm.sh
+if [ -f "${XDG_CONFIG_HOME:-$HOME/.config}/wezterm/wezterm.sh" ]; then
+  source "${XDG_CONFIG_HOME:-$HOME/.config}/wezterm/wezterm.sh"
 fi
 
 # ==========================================

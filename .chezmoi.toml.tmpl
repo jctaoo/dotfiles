@@ -2,10 +2,7 @@
 # Auto-generates ~/.config/chezmoi/chezmoi.toml during `chezmoi init`.
 # Uses promptStringOnce: prompts only if the value is not already set.
 
-{{- /* ===== Tool configuration (preserve existing settings) ===== */}}
-
-[diff]
-    command = "delta"
+{{- /* ===== Tool configuration ===== */}}
 
 [merge]
     command = "nvim"

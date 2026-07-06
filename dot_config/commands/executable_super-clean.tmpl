@@ -1,8 +1,16 @@
 #!/usr/bin/env bash
-# super-clean —— A script to clean up orphan packages, pacman cache, and yay AUR build cache on Arch Linux.   
+# super-clean —— Distro-specific system cleanup script.
+# Currently supports Arch Linux and derivatives.
 
 set -euo pipefail
 
+{{ if ne .chezmoi.os "linux" -}}
+echo "super-clean is only supported on Linux" >&2
+exit 1
+{{ else if not (hasKey .chezmoi.osRelease "id") -}}
+echo "super-clean: unable to detect Linux distribution" >&2
+exit 1
+{{ else if or (eq .chezmoi.osRelease.id "arch") (eq .chezmoi.osRelease.id "manjaro") (eq .chezmoi.osRelease.id "endeavouros") -}}
 KEEP=2
 DRY_RUN=0
 
@@ -64,3 +72,7 @@ fi
 
 echo ""
 echo "=== Cleanup complete ==="
+{{ else -}}
+echo "super-clean is not supported on {{ .chezmoi.osRelease.id }}" >&2
+exit 1
+{{ end -}}
