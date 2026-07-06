@@ -90,18 +90,16 @@ local function setup_copilot_auth()
 
   vim.api.nvim_create_autocmd("VimEnter", {
     group = copilot_auth_group,
+    once = true,
     callback = function()
-      -- 此时插件已完全加载，直接安全调用命令
-      pcall(vim.cmd, "Copilot auth")
+      vim.defer_fn(function() pcall(vim.cmd, "Copilot auth") end, 1000)
     end,
   })
 end
 
 patch_vim_ui_open()
 
-if vim.g.vscode then
-  return
-end
+if vim.g.vscode then return end
 
 -- Terminal specified
 setup_reset_terminal_palette()
