@@ -42,7 +42,7 @@ brew "p7zip"
 
 # Fonts
 cask "font-noto-color-emoji"
-cask "font-monaspice-nerd-font"
+cask "font-monaspace"
 cask "font-juliamono"
 cask "font-lxgw-wenkai"
 
