@@ -104,7 +104,8 @@ else
   GLOW_VER=$(curl -s https://api.github.com/repos/charmbracelet/glow/releases/latest | grep tag_name | cut -d'"' -f4)
   GLOW_DIR=$(mktemp -d)
   wget "https://github.com/charmbracelet/glow/releases/download/${GLOW_VER}/glow_${GLOW_VER#v}_Linux_x86_64.tar.gz" -O "$GLOW_DIR/glow.tar.gz"
-  sudo tar xf "$GLOW_DIR/glow.tar.gz" -C /usr/local/bin "glow"
+  tar xf "$GLOW_DIR/glow.tar.gz" -C "$GLOW_DIR"
+  sudo cp "$GLOW_DIR"/glow_*/glow /usr/local/bin/
   rm -rf "$GLOW_DIR"
 fi
 
