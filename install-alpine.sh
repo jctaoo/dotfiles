@@ -113,6 +113,7 @@ if command -v fnm >/dev/null 2>&1; then
   echo "  already installed, skipping."
 else
   curl -fsSL https://fnm.vercel.app/install | bash
+  export PATH="$HOME/.local/share/fnm:$PATH"
 fi
 
 echo "==> Installing opencode..."
