@@ -1,0 +1,1 @@
+# This file only store simple alias, if you want to add more complex alias, please use 20-aliases.ps1 instead.
