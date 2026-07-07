@@ -23,6 +23,7 @@ fi
 # Error loading shared library libstdc++.so.6: No such file or directory
 if [[ "$IS_ALPINE" == true ]]; then
     export FNM_ARCH=x64-musl
+    export FNODE_DISTRO_MIRROR="https://unofficial-builds.nodejs.org/download/release"
 fi
 if (( $+commands[fnm] )); then
     eval "$(fnm env --shell zsh)"
