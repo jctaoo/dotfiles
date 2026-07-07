@@ -160,8 +160,11 @@ fi
 
 echo "==> Installing fonts..."
 mkdir -p ~/.local/share/fonts
-wget -O /tmp/monaspace.zip "https://github.com/ryanoasis/nerd-fonts/releases/latest/download/Monaspace.zip"
-unzip -o /tmp/monaspace.zip -d ~/.local/share/fonts/ && rm /tmp/monaspace.zip
+MONASPACE_VER=$(curl -s https://api.github.com/repos/githubnext/monaspace/releases/latest | grep tag_name | cut -d'"' -f4)
+wget -O /tmp/monaspace.zip "https://github.com/githubnext/monaspace/releases/download/${MONASPACE_VER}/monaspace-nerdfonts-${MONASPACE_VER}.zip"
+unzip -o /tmp/monaspace.zip "NerdFonts/*/*.otf" -d /tmp/monaspace-fonts/
+mv /tmp/monaspace-fonts/NerdFonts/*/*.otf ~/.local/share/fonts/
+rm -rf /tmp/monaspace.zip /tmp/monaspace-fonts/
 wget -O /tmp/juliamono.tar.gz "https://github.com/cormullion/juliamono/releases/latest/download/JuliaMono-ttf.tar.gz"
 tar xf /tmp/juliamono.tar.gz -C ~/.local/share/fonts/ && rm /tmp/juliamono.tar.gz
 wget -O ~/.local/share/fonts/LXGWWenKaiMonoScreen.ttf "https://github.com/lxgw/LxgwWenKai-Screen/releases/latest/download/LXGWWenKaiMonoScreen.ttf"
