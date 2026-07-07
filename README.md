@@ -24,6 +24,7 @@ Managed configurations:
 - **Arch** - fully supported, tested on fresh install with `yay` package manager
 - **Deepin** - fully supported, tested on fresh install with `apt` package manager
 - **Ubuntu LTS** - fully supported, tested on fresh install with `apt` package manager
+- **Alpine Linux** - partially supported, tested on fresh install with `apk` package manager, wezterm and fonts not installed.
 
 ## TODO
 
@@ -32,7 +33,6 @@ These distros are not yet supported:
 - [ ] **NixOS** - needs Nix package management adaptation
 - [ ] **Fedora** - needs `dnf` install flow testing
 - [ ] **openSUSE** - needs `zypper` install flow testing
-- [ ] **Alpine Linux** - needs `apk` and musl libc adaptation
 - [ ] **Windows** - needs PowerShell and Windows Terminal adaptation
 - [ ] **macOS** - needs Homebrew and macOS-specific config adaptation
 
