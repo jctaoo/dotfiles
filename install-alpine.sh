@@ -43,7 +43,6 @@ sudo apk add \
   eza \
   github-cli \
   fastfetch \
-  libstdc++6 \
   libstdc++
 
 echo "==> Installing starship..."
