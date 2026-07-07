@@ -101,9 +101,7 @@ For Fedora:
 
 ```bash
 # 1. Install chezmoi (if not already installed)
-if ! command -v chezmoi >/dev/null 2>&1; then
-  sh -c "$(curl -fsLS https://get.chezmoi.io)" -- -b ~/.local/bin
-fi
+sh -c "$(curl -fsLS https://get.chezmoi.io)" -- -b ~/.local/bin
 export PATH="$HOME/.local/bin:$PATH"
 
 # 2. Initialize and apply dotfiles
