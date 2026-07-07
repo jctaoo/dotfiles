@@ -30,7 +30,7 @@ sudo apt install -y \
   fonts-noto-color-emoji \
   curl \
   wget \
-  gpg
+  gnupg
 
 echo "==> Installing starship..."
 curl -sS https://starship.rs/install.sh | sh -s -- -y
@@ -39,6 +39,7 @@ echo "==> Installing eza..."
 sudo mkdir -p /etc/apt/keyrings
 wget -qO- https://raw.githubusercontent.com/eza-community/eza/main/deb.asc | sudo gpg --dearmor -o /etc/apt/keyrings/gierens.gpg
 echo "deb [signed-by=/etc/apt/keyrings/gierens.gpg] http://deb.gierens.de stable main" | sudo tee /etc/apt/sources.list.d/gierens.list
+sudo chmod 644 /etc/apt/keyrings/gierens.gpg /etc/apt/sources.list.d/gierens.list
 sudo apt update && sudo apt install -y eza
 
 echo "==> Installing github-cli..."
@@ -57,7 +58,7 @@ sudo dpkg -i /tmp/git-delta.deb && rm /tmp/git-delta.deb
 
 echo "==> Installing lazygit..."
 LAZYGIT_VER=$(curl -s https://api.github.com/repos/jesseduffield/lazygit/releases/latest | grep tag_name | cut -d'"' -f4)
-curl -Lo /tmp/lazygit.tar.gz "https://github.com/jesseduffield/lazygit/releases/download/${LAZYGIT_VER}/lazygit_${LAZYGIT_VER#v}_Linux_x86_64.tar.gz"
+curl -Lo /tmp/lazygit.tar.gz "https://github.com/jesseduffield/lazygit/releases/download/${LAZYGIT_VER}/lazygit_${LAZYGIT_VER#v}_linux_x86_64.tar.gz"
 sudo tar xf /tmp/lazygit.tar.gz -C /usr/local/bin lazygit && rm /tmp/lazygit.tar.gz
 
 echo "==> Installing uv..."
@@ -65,7 +66,11 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
 export PATH="$HOME/.local/bin:$PATH"
 
 echo "==> Installing yazi..."
-uv tool install yazi
+sudo install -d -m 0755 /etc/apt/keyrings
+curl -fsSL https://debian.griffo.io/EA0F721D231FDD3A0A17B9AC7808B4DD62C41256.asc | sudo gpg --dearmor --yes -o /etc/apt/keyrings/debian.griffo.io.gpg
+echo "deb [signed-by=/etc/apt/keyrings/debian.griffo.io.gpg] https://debian.griffo.io/apt $(lsb_release -sc 2>/dev/null) main" | sudo tee /etc/apt/sources.list.d/debian.griffo.io.list > /dev/null
+sudo chmod 644 /etc/apt/keyrings/debian.griffo.io.gpg /etc/apt/sources.list.d/debian.griffo.io.list
+sudo apt update && sudo apt install -y yazi
 
 echo "==> Installing fnm..."
 curl -fsSL https://fnm.vercel.app/install | bash
@@ -76,12 +81,14 @@ wget "https://github.com/fastfetch-cli/fastfetch/releases/download/${FASTFETCH_V
 tar xf /tmp/fastfetch.tar.gz -C /tmp && sudo mv /tmp/fastfetch-linux-amd64/usr/bin/fastfetch /usr/local/bin/ && rm -rf /tmp/fastfetch*
 
 echo "==> Installing glow..."
-echo 'deb [signed-by=/etc/apt/keyrings/charm.gpg] https://repo.charm.sh/apt/ * *' | sudo tee /etc/apt/sources.list.d/charm.list
+sudo mkdir -p /etc/apt/keyrings
 curl -fsSL https://repo.charm.sh/apt/gpg.key | sudo gpg --dearmor -o /etc/apt/keyrings/charm.gpg
+echo "deb [signed-by=/etc/apt/keyrings/charm.gpg] https://repo.charm.sh/apt/ * *" | sudo tee /etc/apt/sources.list.d/charm.list
+sudo chmod 644 /etc/apt/keyrings/charm.gpg /etc/apt/sources.list.d/charm.list
 sudo apt update && sudo apt install -y glow
 
 echo "==> Installing opencode..."
-curl -fsSL https://opencode.ai/install | sh
+curl -fsSL https://opencode.ai/install | bash
 
 echo "==> Installing wezterm..."
 curl -fsSL https://apt.fury.io/wez/gpg.key | sudo gpg --dearmor -o /etc/apt/keyrings/wezterm-fury.gpg
@@ -94,7 +101,7 @@ wget -O /tmp/monaspace.zip "https://github.com/ryanoasis/nerd-fonts/releases/lat
 unzip -o /tmp/monaspace.zip -d ~/.local/share/fonts/ && rm /tmp/monaspace.zip
 wget -O /tmp/juliamono.tar.gz "https://github.com/cormullion/juliamono/releases/latest/download/JuliaMono-ttf.tar.gz"
 tar xf /tmp/juliamono.tar.gz -C ~/.local/share/fonts/ && rm /tmp/juliamono.tar.gz
-wget -O ~/.local/share/fonts/LXGWWenKaiMonoScreen-Regular.ttf "https://github.com/lxgw/LxgwWenKai-Screen/releases/latest/download/LXGWWenKaiMonoScreen-Regular.ttf"
+wget -O ~/.local/share/fonts/LXGWWenKaiMonoScreen.ttf "https://github.com/lxgw/LxgwWenKai-Screen/releases/latest/download/LXGWWenKaiMonoScreen.ttf"
 fc-cache -fv
 
 echo "==> Done! Log out and back in, then launch WezTerm."
