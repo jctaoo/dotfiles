@@ -59,7 +59,8 @@ end)
 
 -- Font
 local function default_font(weight, italic)
-	local fallbacks = { { family = "Monaspace Argon NF", weight = weight, italic = italic } }
+	local fallbacks = { { family = "Monaspace Argon NF", weight = weight, italic = italic },
+	  { family = "MonaspiceAr Nerd Font", weight = weight, italic = italic } }
 
 	if utils.get_system() == "macos" then
 		table.insert(fallbacks, { family = "PingFang SC", weight = weight, italic = italic })

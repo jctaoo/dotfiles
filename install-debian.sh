@@ -31,6 +31,7 @@ sudo apt install -y \
   less \
   git \
   jq \
+  neovim \
   openssh-client \
   btop \
   chafa \
