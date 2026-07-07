@@ -21,7 +21,7 @@ case "$(uname -s)" in
         fi
 
         case "$distro" in
-            arch|manjaro|endeavouros)
+            arch|manjaro|endeavouros|alpine)
                 candidate_prefixes=(
                     "/usr/share/zsh/plugins"
                 )
