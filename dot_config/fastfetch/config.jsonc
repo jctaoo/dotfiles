@@ -77,7 +77,7 @@
     },
     {
       "type": "localip",
-      "namePrefix": "eth1",
+      "namePrefix": "eth",
       "defaultRouteOnly": false,
       "showIpv4": true,
       "showIpv6": false,
