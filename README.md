@@ -33,6 +33,12 @@ These distros are not yet supported:
 
 ## Quick Start
 
+Before starting, ensure you have backup of your existing dotfiles and configurations. This setup will overwrite existing configs. These files and directories will be replaced:
+
+- `~/.zshenv`
+- `~/.gitconfig`
+- `~/.config/`
+
 For archlinux:
 
 ```bash
@@ -61,8 +67,13 @@ chsh -s $(which zsh)
 For Debian / Ubuntu:
 
 ```bash
-# 1. Install chezmoi
+# 1. Install chezmoi and git
 sh -c "$(curl -fsLS https://get.chezmoi.io)" -- -b ~/.local/bin
+sudo apt update && sudo apt install -y git
+
+# If ~/.local/bin is not in your PATH, add it to your shell config:
+echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc
+source ~/.bashrc
 
 # 2. Initialize and apply dotfiles
 chezmoi init https://github.com/jctaoo/dotfiles.git
