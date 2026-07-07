@@ -22,6 +22,7 @@ Managed configurations:
 ## Tested Platforms
 
 - **Arch** - fully supported, tested on fresh install with `yay` package manager
+- **Fedora** - fully supported, tested on fresh install with `dnf` package manager
 - **Deepin** - fully supported, tested on fresh install with `apt` package manager
 - **Ubuntu LTS** - fully supported, tested on fresh install with `apt` package manager
 - **Alpine Linux** - partially supported, tested on fresh install with `apk` package manager, wezterm and fonts not installed.
@@ -31,7 +32,6 @@ Managed configurations:
 These distros are not yet supported:
 
 - [ ] **NixOS** - needs Nix package management adaptation
-- [ ] **Fedora** - needs `dnf` install flow testing
 - [ ] **openSUSE** - needs `zypper` install flow testing
 - [ ] **Windows** - needs PowerShell and Windows Terminal adaptation
 - [ ] **macOS** - needs Homebrew and macOS-specific config adaptation
@@ -57,13 +57,13 @@ cd /tmp/yay-bin && makepkg -si && cd -
 # 2. Install chezmoi
 yay -S --needed chezmoi
 
-# 3. Install and initialize chezmoi
+# 3. Initialize and apply dotfiles
 chezmoi init https://github.com/jctaoo/dotfiles.git
 chezmoi apply
 
-# 4. Install all recommended packages from this repo
+# 4. Install all recommended packages
 chezmoi cd
-yay -S --needed - < archpackages.txt
+bash install-arch.sh
 
 # 5. Set default shell to zsh
 chsh -s $(which zsh)
@@ -96,6 +96,29 @@ chsh -s $(which zsh)
 ```
 
 > **Note:** On Debian/Ubuntu, `bat` is installed as `batcat` and `fd` as `fdfind`. The zsh config handles this automatically via aliases.
+
+For Fedora:
+
+```bash
+# 1. Install chezmoi (if not already installed)
+if ! command -v chezmoi >/dev/null 2>&1; then
+  sh -c "$(curl -fsLS https://get.chezmoi.io)" -- -b ~/.local/bin
+fi
+export PATH="$HOME/.local/bin:$PATH"
+
+# 2. Initialize and apply dotfiles
+chezmoi init https://github.com/jctaoo/dotfiles.git
+chezmoi apply
+
+# 3. Install all packages (dnf + extras)
+chezmoi cd
+bash install-fedora.sh
+
+# 4. Set default shell to zsh
+chsh -s $(which zsh)
+
+# 5. Log out and back in, launch WezTerm
+```
 
 For Alpine Linux:
 
@@ -143,7 +166,7 @@ chsh -s $(which zsh)
 
 List from `yay -Qe` (explicitly installed packages), organized by category. Install these on a fresh Arch system to match this dotfiles setup.
 
-Full package list in [`archpackages.txt`](./archpackages.txt), install with `yay -S --needed - < archpackages.txt`.
+Run [`install-arch.sh`](./install-arch.sh) to install all packages via `yay`.
 
 | Category | Packages |
 |----------|----------|
