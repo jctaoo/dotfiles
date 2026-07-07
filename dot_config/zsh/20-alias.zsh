@@ -60,16 +60,25 @@ cat() {
 
     # if is image
     if [[ "$mime" == image/* ]]; then
-        # if magick installed
-        if (( $+commands[magick] )); then
-            echo "Displaying image using ImageMagick's sixel output:"
-            magick "$file" sixel:-
-        elif (( $+commands[chafa] )); then
-            echo "Displaying image using chafa:"
-            chafa "$file"
+        if [[ "$(uname -s)" == Darwin ]]; then
+            if (( $+commands[chafa] )); then
+                echo "Displaying image using chafa:"
+                chafa "$file"
+            else
+                echo "Error: 'chafa' is not installed. Cannot display image."
+                return 1
+            fi
         else
-            echo "Error: Neither 'magick' nor 'chafa' is installed. Cannot display image."
-            return 1
+            if (( $+commands[magick] )); then
+                echo "Displaying image using ImageMagick's sixel output:"
+                magick "$file" sixel:-
+            elif (( $+commands[chafa] )); then
+                echo "Displaying image using chafa:"
+                chafa "$file"
+            else
+                echo "Error: Neither 'magick' nor 'chafa' is installed. Cannot display image."
+                return 1
+            fi
         fi
         return
     fi
@@ -134,8 +143,14 @@ y() {
 # trash 配置
 # ----------------------------------------------------------------------
 trash() {
-    local xdg_data="${XDG_DATA_HOME:-$HOME/.local/share}"
-    local trash_dir="${xdg_data}/Trash/files"
+    local trash_dir
+
+    if [[ "$(uname -s)" == Darwin ]]; then
+        trash_dir="$HOME/.Trash"
+    else
+        local xdg_data="${XDG_DATA_HOME:-$HOME/.local/share}"
+        trash_dir="${xdg_data}/Trash/files"
+    fi
 
     if [[ ! -d "$trash_dir" ]]; then
         echo "Error: Trash directory not found at $trash_dir"
