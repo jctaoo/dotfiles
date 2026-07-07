@@ -20,6 +20,7 @@ config.adjust_window_size_when_changing_font_size = false
 config.window_background_opacity = utils.is_windows() and 0 or 0.8
 config.text_background_opacity = 1
 config.win32_system_backdrop = "Mica"
+config.macos_window_background_blur = 30
 config.initial_cols = 120
 config.initial_rows = 28
 config.window_decorations = "TITLE | RESIZE"
