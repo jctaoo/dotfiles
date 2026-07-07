@@ -54,12 +54,6 @@ else
 	config.default_prog = { "/bin/zsh", "-l" }
 end
 
-config.window_padding = {
-	top = 2,
-	left = 2,
-	right = 2,
-	bottom = 2,
-}
 config.inactive_pane_hsb = {
 	saturation = 0.5, -- 降低饱和度
 	brightness = 0.5, -- 调暗亮度，数值越小越暗
