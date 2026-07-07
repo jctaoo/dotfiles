@@ -4,6 +4,9 @@ set -euo pipefail
 echo "==> Updating system..."
 sudo apt update && sudo apt upgrade -y
 
+echo "==> Removing old p7zip packages that conflict with new 7zip..."
+sudo apt remove -y p7zip-full p7zip 2>/dev/null || true
+
 echo "==> Installing apt packages..."
 sudo apt install -y \
   build-essential \
