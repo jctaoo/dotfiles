@@ -10,14 +10,12 @@ sudo dnf install -y \
   zsh \
   zsh-autosuggestions \
   zsh-syntax-highlighting \
-  starship \
   bat \
   eza \
   fd-find \
   fzf \
   ripgrep \
   zoxide \
-  yazi \
   trash-cli \
   less \
   git \
@@ -41,6 +39,22 @@ sudo dnf install -y \
   wget
 
 export PATH="$HOME/.local/bin:$PATH"
+
+echo "==> Installing starship..."
+if command -v starship >/dev/null 2>&1; then
+  echo "  already installed, skipping."
+else
+  sudo dnf copr enable atim/starship -y
+  sudo dnf install -y starship
+fi
+
+echo "==> Installing yazi..."
+if command -v yazi >/dev/null 2>&1; then
+  echo "  already installed, skipping."
+else
+  sudo dnf copr enable lihaohong/yazi -y
+  sudo dnf install -y yazi
+fi
 
 echo "==> Installing lazygit..."
 if command -v lazygit >/dev/null 2>&1; then
