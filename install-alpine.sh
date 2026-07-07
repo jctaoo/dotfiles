@@ -41,7 +41,8 @@ sudo apk add \
   curl \
   wget \
   eza \
-  github-cli
+  github-cli \
+  fastfetch
 
 echo "==> Installing starship..."
 if command -v starship >/dev/null 2>&1; then
@@ -58,7 +59,7 @@ else
   DELTA_DIR=$(mktemp -d)
   wget "https://github.com/dandavison/delta/releases/download/${DELTA_VER}/delta-${DELTA_VER}-x86_64-unknown-linux-musl.tar.gz" -O "$DELTA_DIR/delta.tar.gz"
   tar xf "$DELTA_DIR/delta.tar.gz" -C "$DELTA_DIR"
-  sudo   sudo cp "$DELTA_DIR"/delta-*/delta /usr/local/bin/
+  sudo cp "$DELTA_DIR"/delta-*/delta /usr/local/bin/
   rm -rf "$DELTA_DIR"
 fi
 
@@ -83,18 +84,6 @@ else
   sudo cp "$YAZI_DIR/yazi-x86_64-unknown-linux-musl/ya" /usr/local/bin/
   sudo cp "$YAZI_DIR/yazi-x86_64-unknown-linux-musl/yazi" /usr/local/bin/
   rm -rf "$YAZI_DIR"
-fi
-
-echo "==> Installing fastfetch..."
-if command -v fastfetch >/dev/null 2>&1; then
-  echo "  already installed, skipping."
-else
-  FASTFETCH_VER=$(curl -s https://api.github.com/repos/fastfetch-cli/fastfetch/releases/latest | grep tag_name | cut -d'"' -f4)
-  FASTFETCH_DIR=$(mktemp -d)
-  wget "https://github.com/fastfetch-cli/fastfetch/releases/download/${FASTFETCH_VER}/fastfetch-linux-amd64.tar.gz" -O "$FASTFETCH_DIR/fastfetch.tar.gz"
-  tar xf "$FASTFETCH_DIR/fastfetch.tar.gz" -C "$FASTFETCH_DIR"
-  sudo mv "$FASTFETCH_DIR"/fastfetch-linux-amd64/usr/bin/fastfetch /usr/local/bin/
-  rm -rf "$FASTFETCH_DIR"
 fi
 
 echo "==> Installing glow..."
@@ -128,7 +117,11 @@ echo "==> Installing opencode..."
 if command -v opencode >/dev/null 2>&1; then
   echo "  already installed, skipping."
 else
-  curl -fsSL https://opencode.ai/install | bash
+  OPENCODE_DIR=$(mktemp -d)
+  wget "https://github.com/anomalyco/opencode/releases/latest/download/opencode-linux-x64-musl.tar.gz" -O "$OPENCODE_DIR/opencode.tar.gz"
+  tar xzf "$OPENCODE_DIR/opencode.tar.gz" -C "$OPENCODE_DIR"
+  sudo cp "$OPENCODE_DIR/opencode" /usr/local/bin/
+  rm -rf "$OPENCODE_DIR"
 fi
 
 echo "==> Done! Log out and back in."
