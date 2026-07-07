@@ -99,31 +99,25 @@ chsh -s $(which zsh)
 For Alpine Linux:
 
 ```bash
-# 1. Enable the community repository in /etc/apk/repositories, then:
-sudo apk update
+# 1. Install git and chezmoi
+sudo apk update && sudo apk add git chezmoi
 
-# 2. Install prerequisites
-sudo apk add bash git curl sudo shadow chezmoi
-
-# 3. Initialize and apply dotfiles
+# 2. Initialize and apply dotfiles
 chezmoi init https://github.com/jctaoo/dotfiles.git
 chezmoi apply
 
-# 4. Install all recommended packages from this repo
+# 3. Install all packages
 chezmoi cd
-sudo apk add zsh zsh-autosuggestions zsh-syntax-highlighting starship wezterm \
-  eza fzf ripgrep zoxide yazi trash-cli fd bat btop fastfetch \
-  chafa glow imagemagick libheif exiftool p7zip unzip less \
-  git-delta lazygit neovim jq openssh github-cli \
-  noto-fonts-emoji nerd-fonts
+sudo apk add bash
+bash install-alpine.sh
 
-# 5. Set default shell to zsh
+# 4. Set default shell to zsh
 chsh -s $(which zsh)
 
-# 6. Log out and back in, launch WezTerm
+# 5. Log out and back in
 ```
 
-> **Note:** Alpine uses musl libc. Some packages (`wezterm`, `fnm`, `uv`) may only be in the `edge` repository or need to be built from source. Check availability with `apk search <pkg>` before installing.
+> **Note:** Alpine uses musl libc. The install script (`install-alpine.sh`) downloads prebuilt musl binaries for tools not in the apk repos. The script does not install GUI apps (`wezterm`) or fonts — Alpine is server/headless focused in this setup.
 
 ---
 

@@ -6,7 +6,9 @@ set -euo pipefail
 # third-party repos don't recognize. Map them to the Debian base.
 CODENAME=$(lsb_release -sc 2>/dev/null)
 case "$CODENAME" in
-  crimson|apricot) CODENAME="bookworm" ;; # Deepin v23 based on Debian 12
+  crimson)        CODENAME="trixie"   ;; # Deepin v25 based on Debian 13
+  apricot|pangolin) CODENAME="bookworm" ;; # Deepin v23 based on Debian 12
+  aryas)          CODENAME="bullseye" ;; # Deepin v20 based on Debian 11
 esac
 
 echo "==> Updating system..."
@@ -69,13 +71,12 @@ if command -v gh >/dev/null 2>&1; then
 else
   (type -p wget >/dev/null || sudo apt install wget -y) && \
     sudo mkdir -p -m 755 /etc/apt/keyrings && \
-    tmp=$(mktemp) && wget -nv -O"$tmp" https://cli.github.com/packages/githubcli-archive-keyring.gpg && \
-    cat "$tmp" | sudo tee /etc/apt/keyrings/githubcli-archive-keyring.gpg > /dev/null && \
-    rm -f "$tmp" && \
+    sudo rm -f /etc/apt/keyrings/githubcli-archive-keyring.gpg && \
+    wget -qO- https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo gpg --dearmor --yes -o /etc/apt/keyrings/githubcli-archive-keyring.gpg && \
     sudo chmod go+r /etc/apt/keyrings/githubcli-archive-keyring.gpg && \
     sudo mkdir -p -m 755 /etc/apt/sources.list.d && \
     echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null && \
-    sudo apt update && sudo apt install gh -y
+    sudo apt update && sudo apt install -y gh
 fi
 
 echo "==> Installing git-delta..."
@@ -83,8 +84,10 @@ if command -v delta >/dev/null 2>&1; then
   echo "  already installed, skipping."
 else
   DELTA_VER=$(curl -s https://api.github.com/repos/dandavison/delta/releases/latest | grep tag_name | cut -d'"' -f4)
-  wget "https://github.com/dandavison/delta/releases/download/${DELTA_VER}/git-delta_${DELTA_VER#v}_amd64.deb" -O /tmp/git-delta.deb
-  sudo dpkg -i /tmp/git-delta.deb && rm /tmp/git-delta.deb
+  wget -q "https://github.com/dandavison/delta/releases/download/${DELTA_VER}/git-delta_${DELTA_VER#v}_amd64.deb" -O /tmp/git-delta.deb
+  sudo apt install -y /tmp/git-delta.deb
+  sudo apt -f install -y
+  rm -f /tmp/git-delta.deb
 fi
 
 echo "==> Installing lazygit..."
@@ -109,6 +112,7 @@ if command -v yazi >/dev/null 2>&1; then
   echo "  already installed, skipping."
 else
   sudo install -d -m 0755 /etc/apt/keyrings
+  sudo rm -f /etc/apt/keyrings/debian.griffo.io.gpg
   curl -fsSL https://debian.griffo.io/EA0F721D231FDD3A0A17B9AC7808B4DD62C41256.asc | sudo gpg --dearmor --yes -o /etc/apt/keyrings/debian.griffo.io.gpg
   echo "deb [signed-by=/etc/apt/keyrings/debian.griffo.io.gpg] https://debian.griffo.io/apt $CODENAME main" | sudo tee /etc/apt/sources.list.d/debian.griffo.io.list > /dev/null
   sudo chmod 644 /etc/apt/keyrings/debian.griffo.io.gpg /etc/apt/sources.list.d/debian.griffo.io.list
