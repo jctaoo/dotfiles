@@ -1,6 +1,6 @@
 # Chezmoi Dotfiles
 
-Cross-platform dotfiles managed with [chezmoi](https://www.chezmoi.io/). Supports macOS, Linux (Arch, Debian), and Windows (pwsh).
+Cross-platform dotfiles managed with [chezmoi](https://www.chezmoi.io/). Supports macOS, Linux (Arch, Debian, etc.), and Windows (pwsh).
 
 Terminal stack: zsh + Neovim + WezTerm.
 
@@ -33,6 +33,8 @@ These distros are not yet supported:
 - [ ] **openSUSE** - needs `zypper` install flow testing
 - [ ] **Ubuntu LTS** - needs long-term support version compatibility testing
 - [ ] **Alpine Linux** - needs `apk` and musl libc adaptation
+- [ ] **Windows** - needs PowerShell and Windows Terminal adaptation
+- [ ] **macOS** - needs Homebrew and macOS-specific config adaptation
 
 ---
 

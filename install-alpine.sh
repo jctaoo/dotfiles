@@ -57,7 +57,8 @@ else
   DELTA_VER=$(curl -s https://api.github.com/repos/dandavison/delta/releases/latest | grep tag_name | cut -d'"' -f4)
   DELTA_DIR=$(mktemp -d)
   wget "https://github.com/dandavison/delta/releases/download/${DELTA_VER}/delta-${DELTA_VER}-x86_64-unknown-linux-musl.tar.gz" -O "$DELTA_DIR/delta.tar.gz"
-  sudo tar xf "$DELTA_DIR/delta.tar.gz" -C /usr/local/bin --strip-components=1 "$(tar tf "$DELTA_DIR/delta.tar.gz" | head -1)delta"
+  tar xf "$DELTA_DIR/delta.tar.gz" -C "$DELTA_DIR"
+  sudo   sudo cp "$DELTA_DIR"/delta-*/delta /usr/local/bin/
   rm -rf "$DELTA_DIR"
 fi
 
