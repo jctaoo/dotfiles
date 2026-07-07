@@ -51,5 +51,4 @@ cask "font-juliamono"
 cask "font-lxgw-wenkai"
 
 # Package Managers and AI Assistant
-tap "opencode-ai/tap"
-brew "opencode-ai/tap/opencode"
+brew "opencode"
