@@ -51,6 +51,19 @@ sudo apt install -y \
   wget \
   gnupg
 
+echo "==> Fixing bat -> batcat naming on Debian/Ubuntu..."
+# The `bat` apt package installs the binary as `batcat` on Debian/Ubuntu
+# due to a name clash with bacula-console-qt. Use dpkg-divert to redirect
+# batcat → bat so that tools (yazi, fzf, etc.) find the `bat` command.
+# https://github.com/sharkdp/bat/issues/982
+# https://github.com/sharkdp/bat/issues/2455
+if command -v batcat >/dev/null 2>&1 && ! command -v bat >/dev/null 2>&1; then
+  sudo dpkg-divert --rename --divert /usr/bin/bat /usr/bin/batcat
+  echo "  diverted batcat → bat."
+else
+  echo "  already a-ok, skipping."
+fi
+
 echo "==> Installing starship..."
 if command -v starship >/dev/null 2>&1; then
   echo "  already installed, skipping."
