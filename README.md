@@ -144,6 +144,7 @@ For macOS:
 ```bash
 # 1. Install Homebrew (if not already installed)
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+# And then flow the instructions to add Homebrew to your PATH...
 
 # 2. Install chezmoi and git
 brew install chezmoi git

@@ -17,8 +17,6 @@ brew "fzf"
 brew "ripgrep"
 brew "zoxide"
 brew "yazi"
-brew "trash-cli"
-brew "less"
 
 # Development Tools
 brew "git"
@@ -29,7 +27,6 @@ brew "neovim"
 brew "fnm"
 brew "uv"
 brew "jq"
-brew "openssh"
 
 # System Monitoring and Info
 brew "btop"
@@ -42,7 +39,6 @@ brew "imagemagick"
 brew "libheif"
 brew "exiftool"
 brew "p7zip"
-brew "unzip"
 
 # Fonts
 cask "font-noto-color-emoji"
