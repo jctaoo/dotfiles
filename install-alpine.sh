@@ -41,8 +41,7 @@ sudo apk add \
   curl \
   wget \
   eza \
-  github-cli \
-  glibc-locales
+  github-cli
 
 echo "==> Installing starship..."
 if command -v starship >/dev/null 2>&1; then

@@ -1,14 +1,18 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Detect Debian base codename for third-party repos.
-# Deepin/UOS return non-standard codenames (e.g. "crimson") that
-# third-party repos don't recognize. Map them to the Debian base.
+# Detect the distribution codename for third-party apt repos.
+# Some Debian/Ubuntu derivatives use their own codenames that third-party
+# repos (e.g. debian.griffo.io) do not ship a suite for. Map them to the
+# corresponding upstream codename.
+# - Standard Debian (bookworm/trixie/forky/sid) passes through unchanged.
+# - Standard Ubuntu (jammy/noble/questing/resolute) passes through unchanged.
+# - Derivatives that diverge from upstream codenames are remapped below.
 CODENAME=$(lsb_release -sc 2>/dev/null)
 case "$CODENAME" in
-  crimson)        CODENAME="trixie"   ;; # Deepin v25 based on Debian 13
-  apricot|pangolin) CODENAME="bookworm" ;; # Deepin v23 based on Debian 12
-  aryas)          CODENAME="bullseye" ;; # Deepin v20 based on Debian 11
+  crimson)   CODENAME="trixie"   ;; # Deepin v25 — Debian base not officially disclosed; trixie is the closest match
+  beige)     CODENAME="bookworm" ;; # Deepin v23 — based on Debian 12
+  apricot)   CODENAME="bullseye" ;; # Deepin v20.x — based on Debian 11
 esac
 
 echo "==> Updating system..."
