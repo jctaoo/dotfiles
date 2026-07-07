@@ -23,7 +23,7 @@ config.win32_system_backdrop = "Mica"
 config.macos_window_background_blur = 30
 config.initial_cols = 120
 config.initial_rows = 28
-config.window_decorations = "TITLE | RESIZE"
+config.window_decorations = utils.get_system() == "macos" and "RESIZE" or "TITLE | RESIZE"
 config.use_fancy_tab_bar = false
 config.tab_bar_at_bottom = true
 config.tab_max_width = 52
