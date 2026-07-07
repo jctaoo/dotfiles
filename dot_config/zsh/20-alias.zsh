@@ -158,6 +158,9 @@ fi
 #----------------------------------------------------------------------
 # opencode settings
 #----------------------------------------------------------------------
+if [[ -d "$HOME/.opencode/bin" ]]; then
+    export PATH="$HOME/.opencode/bin:$PATH"
+fi
 if (( $+commands[opencode] )); then
     export OPENCODE_ENABLE_EXA=1
     opencode() {
