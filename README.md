@@ -157,7 +157,12 @@ chezmoi apply
 chezmoi cd
 brew bundle --file=Brewfile
 
-# 5. Log out and back in, launch WezTerm
+# 5. Grant Full Disk Access to your terminal (Required)
+#    System Settings → Privacy & Security → Full Disk Access
+#    Add WezTerm (or your terminal) to the list.
+#    Without this, `trash` and other CLI tools cannot access ~/.Trash.
+
+# 6. Log out and back in, launch WezTerm
 ```
 
 > **Note:** macOS uses the `Brewfile` in this repo for package management. On Apple Silicon Macs, Homebrew installs to `/opt/homebrew`. The default shell is already zsh, so no `chsh` step is needed.
