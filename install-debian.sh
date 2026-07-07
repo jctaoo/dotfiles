@@ -55,7 +55,7 @@ echo "==> Installing starship..."
 if command -v starship >/dev/null 2>&1; then
   echo "  already installed, skipping."
 else
-  curl -sS https://starship.rs/install.sh | sh -s -- -y
+  curl -fsS https://starship.rs/install.sh | sh -s -- -y
 fi
 
 echo "==> Installing eza..."
@@ -87,10 +87,15 @@ echo "==> Installing git-delta..."
 if command -v delta >/dev/null 2>&1; then
   echo "  already installed, skipping."
 else
-  DELTA_VER=$(curl -s https://api.github.com/repos/dandavison/delta/releases/latest | grep tag_name | cut -d'"' -f4)
-  wget -q "https://github.com/dandavison/delta/releases/download/${DELTA_VER}/git-delta_${DELTA_VER#v}_amd64.deb" -O /tmp/git-delta.deb
+  DELTA_VER=$(curl -fsS https://api.github.com/repos/dandavison/delta/releases/latest | jq -r '.tag_name')
+  if [ -z "$DELTA_VER" ] || [ "$DELTA_VER" = "null" ]; then
+    echo "  ERROR: failed to fetch delta version from GitHub API (rate limited?)" >&2
+    exit 1
+  fi
+  echo "  downloading delta ${DELTA_VER}..."
+  wget --show-progress "https://github.com/dandavison/delta/releases/download/${DELTA_VER}/git-delta_${DELTA_VER#v}_amd64.deb" -O /tmp/git-delta.deb
   sudo apt install -y /tmp/git-delta.deb
-  sudo apt -f install -y
+  sudo apt install --fix-broken -y
   rm -f /tmp/git-delta.deb
 fi
 
@@ -98,8 +103,13 @@ echo "==> Installing lazygit..."
 if command -v lazygit >/dev/null 2>&1; then
   echo "  already installed, skipping."
 else
-  LAZYGIT_VER=$(curl -s https://api.github.com/repos/jesseduffield/lazygit/releases/latest | grep tag_name | cut -d'"' -f4)
-  curl -Lo /tmp/lazygit.tar.gz "https://github.com/jesseduffield/lazygit/releases/download/${LAZYGIT_VER}/lazygit_${LAZYGIT_VER#v}_linux_x86_64.tar.gz"
+  LAZYGIT_VER=$(curl -fsS https://api.github.com/repos/jesseduffield/lazygit/releases/latest | jq -r '.tag_name')
+  if [ -z "$LAZYGIT_VER" ] || [ "$LAZYGIT_VER" = "null" ]; then
+    echo "  ERROR: failed to fetch lazygit version from GitHub API (rate limited?)" >&2
+    exit 1
+  fi
+  echo "  downloading lazygit ${LAZYGIT_VER}..."
+  curl -fSL --progress-bar -o /tmp/lazygit.tar.gz "https://github.com/jesseduffield/lazygit/releases/download/${LAZYGIT_VER}/lazygit_${LAZYGIT_VER#v}_linux_x86_64.tar.gz"
   sudo tar xf /tmp/lazygit.tar.gz -C /usr/local/bin lazygit && rm /tmp/lazygit.tar.gz
 fi
 
@@ -134,8 +144,13 @@ echo "==> Installing fastfetch..."
 if command -v fastfetch >/dev/null 2>&1; then
   echo "  already installed, skipping."
 else
-  FASTFETCH_VER=$(curl -s https://api.github.com/repos/fastfetch-cli/fastfetch/releases/latest | grep tag_name | cut -d'"' -f4)
-  wget "https://github.com/fastfetch-cli/fastfetch/releases/download/${FASTFETCH_VER}/fastfetch-linux-amd64.tar.gz" -O /tmp/fastfetch.tar.gz
+  FASTFETCH_VER=$(curl -fsS https://api.github.com/repos/fastfetch-cli/fastfetch/releases/latest | jq -r '.tag_name')
+  if [ -z "$FASTFETCH_VER" ] || [ "$FASTFETCH_VER" = "null" ]; then
+    echo "  ERROR: failed to fetch fastfetch version from GitHub API (rate limited?)" >&2
+    exit 1
+  fi
+  echo "  downloading fastfetch ${FASTFETCH_VER}..."
+  wget --show-progress "https://github.com/fastfetch-cli/fastfetch/releases/download/${FASTFETCH_VER}/fastfetch-linux-amd64.tar.gz" -O /tmp/fastfetch.tar.gz
   tar xf /tmp/fastfetch.tar.gz -C /tmp && sudo mv /tmp/fastfetch-linux-amd64/usr/bin/fastfetch /usr/local/bin/ && rm -rf /tmp/fastfetch*
 fi
 
@@ -168,14 +183,19 @@ fi
 
 echo "==> Installing fonts..."
 mkdir -p ~/.local/share/fonts
-MONASPACE_VER=$(curl -w '%{redirect_url}' -o /dev/null -s https://github.com/githubnext/monaspace/releases/latest | sed 's|.*/tag/||')
-wget -O /tmp/monaspace.zip "https://github.com/githubnext/monaspace/releases/download/${MONASPACE_VER}/monaspace-nerdfonts-${MONASPACE_VER}.zip"
+MONASPACE_VER=$(curl -fsS https://api.github.com/repos/githubnext/monaspace/releases/latest | jq -r '.tag_name')
+if [ -z "$MONASPACE_VER" ] || [ "$MONASPACE_VER" = "null" ]; then
+  echo "  ERROR: failed to fetch monaspace version from GitHub API (rate limited?)" >&2
+  exit 1
+fi
+echo "  downloading monaspace ${MONASPACE_VER}..."
+wget --show-progress -O /tmp/monaspace.zip "https://github.com/githubnext/monaspace/releases/download/${MONASPACE_VER}/monaspace-nerdfonts-${MONASPACE_VER}.zip"
 unzip -o /tmp/monaspace.zip "NerdFonts/*/*.otf" -d /tmp/monaspace-fonts/
 mv /tmp/monaspace-fonts/NerdFonts/*/*.otf ~/.local/share/fonts/
 rm -rf /tmp/monaspace.zip /tmp/monaspace-fonts/
-wget -O /tmp/juliamono.tar.gz "https://github.com/cormullion/juliamono/releases/latest/download/JuliaMono-ttf.tar.gz"
+wget --show-progress -O /tmp/juliamono.tar.gz "https://github.com/cormullion/juliamono/releases/latest/download/JuliaMono-ttf.tar.gz"
 tar xf /tmp/juliamono.tar.gz -C ~/.local/share/fonts/ && rm /tmp/juliamono.tar.gz
-wget -O ~/.local/share/fonts/LXGWWenKaiMonoScreen.ttf "https://github.com/lxgw/LxgwWenKai-Screen/releases/latest/download/LXGWWenKaiMonoScreen.ttf"
+wget --show-progress -O ~/.local/share/fonts/LXGWWenKaiMonoScreen.ttf "https://github.com/lxgw/LxgwWenKai-Screen/releases/latest/download/LXGWWenKaiMonoScreen.ttf"
 fc-cache -fv
 
 echo "==> Done! Log out and back in, then launch WezTerm."

@@ -9,6 +9,9 @@ else
 fi
 
 # FNM Node 环境管理器
+if [[ -d "$HOME/.local/share/fnm" ]]; then
+    export PATH="$HOME/.local/share/fnm:$PATH"
+fi
 if (( $+commands[fnm] )); then
     eval "$(fnm env --shell zsh)"
 fi
