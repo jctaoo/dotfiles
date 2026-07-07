@@ -71,7 +71,7 @@ open_one() {
     local target=$1 os=$2
     case "$os" in
         macos)
-            launch open "$target"
+            launch /usr/bin/open "$target"
             ;;
         msys)
             # `start` is a cmd.exe builtin; first "" is the title placeholder.
