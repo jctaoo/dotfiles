@@ -32,8 +32,6 @@ Managed configurations:
 
 These distros are not yet supported:
 
-- [ ] **NixOS** - needs Nix package management adaptation
-- [ ] **openSUSE** - needs `zypper` install flow testing
 - [ ] **Windows** - needs PowerShell and Windows Terminal adaptation
 
 ---
