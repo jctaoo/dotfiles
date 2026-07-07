@@ -1,8 +1,17 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+# Detect Debian base codename for third-party repos.
+# Deepin/UOS return non-standard codenames (e.g. "crimson") that
+# third-party repos don't recognize. Map them to the Debian base.
+CODENAME=$(lsb_release -sc 2>/dev/null)
+case "$CODENAME" in
+  crimson|apricot) CODENAME="bookworm" ;; # Deepin v23 based on Debian 12
+esac
+
 echo "==> Updating system..."
-sudo apt update && sudo apt upgrade -y
+sudo apt update || true
+sudo apt upgrade -y || true
 
 echo "==> Removing old p7zip packages that conflict with new 7zip..."
 sudo apt remove -y p7zip-full p7zip 2>/dev/null || true
@@ -48,9 +57,11 @@ sudo apt update && sudo apt install -y eza
 echo "==> Installing github-cli..."
 (type -p wget >/dev/null || sudo apt install wget -y) && \
   sudo mkdir -p -m 755 /etc/apt/keyrings && \
-  out=$(wget -qO- https://cli.github.com/packages/githubcli-archive-keyring.gpg) && \
-  echo "$out" | sudo tee /etc/apt/keyrings/githubcli-archive-keyring.gpg > /dev/null && \
+  tmp=$(mktemp) && wget -nv -O"$tmp" https://cli.github.com/packages/githubcli-archive-keyring.gpg && \
+  cat "$tmp" | sudo tee /etc/apt/keyrings/githubcli-archive-keyring.gpg > /dev/null && \
+  rm -f "$tmp" && \
   sudo chmod go+r /etc/apt/keyrings/githubcli-archive-keyring.gpg && \
+  sudo mkdir -p -m 755 /etc/apt/sources.list.d && \
   echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null && \
   sudo apt update && sudo apt install gh -y
 
@@ -71,7 +82,7 @@ export PATH="$HOME/.local/bin:$PATH"
 echo "==> Installing yazi..."
 sudo install -d -m 0755 /etc/apt/keyrings
 curl -fsSL https://debian.griffo.io/EA0F721D231FDD3A0A17B9AC7808B4DD62C41256.asc | sudo gpg --dearmor --yes -o /etc/apt/keyrings/debian.griffo.io.gpg
-echo "deb [signed-by=/etc/apt/keyrings/debian.griffo.io.gpg] https://debian.griffo.io/apt $(lsb_release -sc 2>/dev/null) main" | sudo tee /etc/apt/sources.list.d/debian.griffo.io.list > /dev/null
+echo "deb [signed-by=/etc/apt/keyrings/debian.griffo.io.gpg] https://debian.griffo.io/apt $CODENAME main" | sudo tee /etc/apt/sources.list.d/debian.griffo.io.list > /dev/null
 sudo chmod 644 /etc/apt/keyrings/debian.griffo.io.gpg /etc/apt/sources.list.d/debian.griffo.io.list
 sudo apt update && sudo apt install -y yazi
 
