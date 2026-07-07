@@ -8,9 +8,21 @@ else
     export IS_WSL=false
 fi
 
+# 检测是否在 Alpine 环境
+if [[ -f /etc/alpine-release ]]; then
+    export IS_ALPINE=true
+else
+    export IS_ALPINE=false
+fi
+
 # FNM Node 环境管理器
 if [[ -d "$HOME/.local/share/fnm" ]]; then
     export PATH="$HOME/.local/share/fnm:$PATH"
+fi
+# Resolves linking errors such as:
+# Error loading shared library libstdc++.so.6: No such file or directory
+if [[ "$IS_ALPINE" == true ]]; then
+    export FNM_ARCH=x64-musl
 fi
 if (( $+commands[fnm] )); then
     eval "$(fnm env --shell zsh)"

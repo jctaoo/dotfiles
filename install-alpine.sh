@@ -42,7 +42,9 @@ sudo apk add \
   wget \
   eza \
   github-cli \
-  fastfetch
+  fastfetch \
+  libstdc++6 \
+  libstdc++
 
 echo "==> Installing starship..."
 if command -v starship >/dev/null 2>&1; then
