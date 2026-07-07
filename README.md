@@ -26,6 +26,7 @@ Managed configurations:
 - **Deepin** - fully supported, tested on fresh install with `apt` package manager
 - **Ubuntu LTS** - fully supported, tested on fresh install with `apt` package manager
 - **Alpine Linux** - partially supported, tested on fresh install with `apk` package manager, wezterm and fonts not installed.
+- **macOS** - fully supported, tested with Homebrew package manager.
 
 ## TODO
 
@@ -34,7 +35,6 @@ These distros are not yet supported:
 - [ ] **NixOS** - needs Nix package management adaptation
 - [ ] **openSUSE** - needs `zypper` install flow testing
 - [ ] **Windows** - needs PowerShell and Windows Terminal adaptation
-- [ ] **macOS** - needs Homebrew and macOS-specific config adaptation
 
 ---
 
@@ -140,6 +140,28 @@ chsh -s $(which zsh)
 ```
 
 > **Note:** Alpine uses musl libc. The install script (`install-alpine.sh`) downloads prebuilt musl binaries for tools not in the apk repos. The script does not install GUI apps (`wezterm`) or fonts — Alpine is server/headless focused in this setup.
+
+For macOS:
+
+```bash
+# 1. Install Homebrew (if not already installed)
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+# 2. Install chezmoi and git
+brew install chezmoi git
+
+# 3. Initialize and apply dotfiles
+chezmoi init https://github.com/jctaoo/dotfiles.git
+chezmoi apply
+
+# 4. Install all recommended packages
+chezmoi cd
+brew bundle --file=Brewfile
+
+# 5. Log out and back in, launch WezTerm
+```
+
+> **Note:** macOS uses the `Brewfile` in this repo for package management. On Apple Silicon Macs, Homebrew installs to `/opt/homebrew`. The default shell is already zsh, so no `chsh` step is needed.
 
 ---
 
