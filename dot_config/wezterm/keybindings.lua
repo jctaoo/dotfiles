@@ -1,6 +1,14 @@
+local utils = require("utils")
+
 return function(wezterm, config)
     local act = wezterm.action
     config.leader = { key = 'a', mods = 'CTRL', timeout_milliseconds = 1000 }
+
+    -- if macos
+    if utils.is_macos() then
+        config.send_composed_key_when_left_alt_is_pressed = false
+        config.send_composed_key_when_right_alt_is_pressed = true
+    end
 
     config.keys = {
         { key = "w", mods = 'LEADER',       action = act.CloseCurrentPane { confirm = true } },

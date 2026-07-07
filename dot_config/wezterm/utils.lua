@@ -80,6 +80,10 @@ local function is_windows()
 	return get_system() == "windows"
 end
 
+local function is_macos()
+	return get_system() == "macos"
+end
+
 return {
 	color_scheme_for_appearance = color_scheme_for_appearance,
 	adaptive_color = adaptive_color,
@@ -89,4 +93,5 @@ return {
 	is_wsl = is_wsl,
 	is_unix = is_unix,
 	is_windows = is_windows,
+	is_macos = is_macos,
 }
