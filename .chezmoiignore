@@ -4,3 +4,6 @@
 
 # ignore install scripts
 install-debian.sh
+
+# ignore others
+License

@@ -19,6 +19,11 @@ Managed configurations:
 
 ---
 
+## Tested Platforms
+
+- **Arch** - fully supported, tested on fresh install with `yay` package manager
+- **Deepin** - fully supported, tested on fresh install with `apt` package manager
+
 ## TODO
 
 These distros are not yet supported:
@@ -64,7 +69,7 @@ chsh -s $(which zsh)
 # 6. Log out and back in, launch WezTerm
 ```
 
-For Debian / Ubuntu:
+For Debian / Ubuntu / Deepin:
 
 ```bash
 # 1. Install chezmoi and git
@@ -91,6 +96,35 @@ chsh -s $(which zsh)
 
 > **Note:** On Debian/Ubuntu, `bat` is installed as `batcat` and `fd` as `fdfind`. The zsh config handles this automatically via aliases.
 
+For Alpine Linux:
+
+```bash
+# 1. Enable the community repository in /etc/apk/repositories, then:
+sudo apk update
+
+# 2. Install prerequisites
+sudo apk add bash git curl sudo shadow chezmoi
+
+# 3. Initialize and apply dotfiles
+chezmoi init https://github.com/jctaoo/dotfiles.git
+chezmoi apply
+
+# 4. Install all recommended packages from this repo
+chezmoi cd
+sudo apk add zsh zsh-autosuggestions zsh-syntax-highlighting starship wezterm \
+  eza fzf ripgrep zoxide yazi trash-cli fd bat btop fastfetch \
+  chafa glow imagemagick libheif exiftool p7zip unzip less \
+  git-delta lazygit neovim jq openssh github-cli \
+  noto-fonts-emoji nerd-fonts
+
+# 5. Set default shell to zsh
+chsh -s $(which zsh)
+
+# 6. Log out and back in, launch WezTerm
+```
+
+> **Note:** Alpine uses musl libc. Some packages (`wezterm`, `fnm`, `uv`) may only be in the `edge` repository or need to be built from source. Check availability with `apk search <pkg>` before installing.
+
 ---
 
 ## Table of Contents
@@ -106,6 +140,7 @@ chsh -s $(which zsh)
    - [Fonts](#fonts)
    - [Package Managers and AI Assistant](#package-managers-and-ai-assistant)
 3. [Recommended Terminal: WezTerm](#recommended-terminal-wezterm)
+4. [Common chezmoi Commands](#common-chezmoi-commands)
 
 ---
 
@@ -236,6 +271,36 @@ Windows:
 ```powershell
 winget install wez.wezterm
 ```
+
+---
+
+## Common chezmoi Commands
+
+| Command | Description |
+|---------|-------------|
+| `chezmoi init <repo>` | Clone a dotfiles repo into the source directory (`~/.local/share/chezmoi`). Add `--apply` to also apply it in one step. |
+| `chezmoi apply` | Copy the source files into `$HOME`. Run again any time you want to re-sync. |
+| `chezmoi update` | `git pull` from the source repo, then `apply`. Run this to pull in upstream changes. Add `--apply=false` to pull without applying, so you can review with `chezmoi diff` first. |
+| `chezmoi status` | Show a short summary of what would change in `$HOME`. |
+| `chezmoi diff` | Show the full diff that `apply` would produce. Use `--no-color` for plain output. |
+| `chezmoi managed` | List every file in `$HOME` that chezmoi manages. |
+| `chezmoi source-path` | Print the absolute path of the source directory (useful for browsing the repo). |
+| `chezmoi forget <path>` | Stop managing a file, but leave it in `$HOME` untouched. |
+| `chezmoi destroy <path>` | Remove a managed file from both the source repo and `$HOME`. |
+| `chezmoi doctor` | Diagnose common problems — run this first when something looks wrong. |
+
+### Typical Workflow
+
+```bash
+# First time on a new machine
+chezmoi init https://github.com/jctaoo/dotfiles.git
+chezmoi apply
+
+# Later: pull upstream changes
+chezmoi update
+```
+
+> **Tip:** Most commands accept `-v` (verbose) and `--dry-run` / `-n` (preview without writing), e.g. `chezmoi apply -n`.
 
 ---
 
