@@ -12,5 +12,5 @@ LICENSE
 
 # Windows-only: PowerShell profile
 {{ if ne .chezmoi.os "windows" }}
-Documents/PowerShell/Microsoft.PowerShell_profile.ps1
+Documents/
 {{ end }}
