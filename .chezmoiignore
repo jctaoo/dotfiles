@@ -3,7 +3,8 @@
 *.txt
 
 # ignore install scripts
-install-debian.sh
+*.sh
+Brewfile
 
 # ignore others
 License
