@@ -35,7 +35,7 @@ config.color_scheme = utils.color_scheme_for_appearance()
 if utils.is_windows() then
 	config.default_prog = { "pwsh.exe", "-NoLogo" }
 else
-	config.default_prog = { "zsh" }
+	config.default_prog = { "/bin/zsh", "-l" }
 end
 
 config.window_padding = {
