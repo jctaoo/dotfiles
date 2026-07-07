@@ -26,6 +26,19 @@ config.initial_rows = 28
 config.window_decorations = utils.get_system() == "macos" and "INTEGRATED_BUTTONS | RESIZE" or "TITLE | RESIZE"
 if utils.get_system() == "macos" then
 	config.integrated_title_button_style = "MacOsNative"
+	config.window_padding = {
+		top = 4,
+		left = 2,
+		right = 2,
+		bottom = 2,
+	}
+else
+	config.window_padding = {
+		top = 2,
+		left = 2,
+		right = 2,
+		bottom = 2,
+	}
 end
 config.use_fancy_tab_bar = false
 config.tab_bar_at_bottom = true
