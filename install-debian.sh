@@ -160,7 +160,7 @@ fi
 
 echo "==> Installing fonts..."
 mkdir -p ~/.local/share/fonts
-MONASPACE_VER=$(curl -s https://api.github.com/repos/githubnext/monaspace/releases/latest | grep tag_name | cut -d'"' -f4)
+MONASPACE_VER=$(curl -w '%{redirect_url}' -o /dev/null -s https://github.com/githubnext/monaspace/releases/latest | sed 's|.*/tag/||')
 wget -O /tmp/monaspace.zip "https://github.com/githubnext/monaspace/releases/download/${MONASPACE_VER}/monaspace-nerdfonts-${MONASPACE_VER}.zip"
 unzip -o /tmp/monaspace.zip "NerdFonts/*/*.otf" -d /tmp/monaspace-fonts/
 mv /tmp/monaspace-fonts/NerdFonts/*/*.otf ~/.local/share/fonts/
