@@ -27,12 +27,7 @@ Managed configurations:
 - **Ubuntu LTS** - fully supported, tested on fresh install with `apt` package manager
 - **Alpine Linux** - partially supported, tested on fresh install with `apk` package manager, wezterm and fonts not installed.
 - **macOS** - fully supported, tested with Homebrew package manager.
-
-## TODO
-
-These distros are not yet supported:
-
-- [ ] **Windows** - needs PowerShell and Windows Terminal adaptation
+- **Windows 11** - fully supported, tested with PowerShell 7 and winget package manager.
 
 ---
 
