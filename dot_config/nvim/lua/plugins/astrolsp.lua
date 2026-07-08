@@ -41,6 +41,16 @@ return {
     -- client specific configuration can also go in `lsp/` in your configuration root (see `:h lsp-config`)
     config = {
       -- ["*"] = { capabilities = {} }, -- modify default LSP client settings such as capabilities
+      rust_analyzer = {
+        settings = {
+          ["rust-analyzer"] = {
+            cargo = {
+              extraEnv = { CARGO_PROFILE_RUST_ANALYZER_INHERITS = "dev" },
+              extraArgs = { "--profile", "rust-analyzer" },
+            },
+          },
+        },
+      },
     },
     -- customize how language servers are attached
     handlers = {
@@ -51,12 +61,10 @@ return {
       -- rust_analyzer = false, -- setting a handler to false will disable the set up of that language server
     },
     -- Configure buffer local auto commands to add when attaching a language server
-    autocmds = {
-    },
+    autocmds = {},
     -- mappings to be set up on attaching of a language server
     mappings = {
-      n = {
-      },
+      n = {},
     },
     -- A custom `on_attach` function to be run after the default `on_attach` function
     -- takes two parameters `client` and `bufnr`  (`:h lsp-attach`)
