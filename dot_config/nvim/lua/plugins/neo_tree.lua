@@ -16,7 +16,9 @@ return {
         -- 强制不显示的项目。虽然我们显示了 dotfiles，但通常你不会想看到庞大的 .git 文件夹本身
         never_show = {
           ".git",
-          ".DS_Store", -- For macos
+          ".DS_Store",
+          "Thumbs.db",
+          "desktop.ini",
         },
 
         -- 你也可以在这里指定特定名称的文件进行隐藏（哪怕它不是 dotfile 或没被 gitignore）
