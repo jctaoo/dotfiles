@@ -35,3 +35,12 @@ Set-PSReadLineOption -ShowToolTips
 
 # 灰字提示接受快捷键：绑定 Ctrl + Spacebar
 Set-PSReadLineKeyHandler -Key "Ctrl+Spacebar" -Function AcceptSuggestion
+
+# --------------------------------------------------
+# 智能 Tab 补全 (git, winget)
+# --------------------------------------------------
+if (Get-Module -ListAvailable -Name posh-git) {
+    Import-Module posh-git
+} else {
+    Write-Host "posh-git 模块未安装，git 补全功能将不可用。" -ForegroundColor Yellow
+}
