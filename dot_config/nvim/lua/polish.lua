@@ -65,6 +65,8 @@ local function setup_reset_terminal_palette()
 end
 
 local function patch_vim_ui_open()
+  if vim.fn.has("win32") == 1 then return end
+
   local original_open = vim.ui.open
 
   vim.ui.open = function(path, opt)
