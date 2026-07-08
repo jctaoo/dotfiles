@@ -167,6 +167,51 @@ brew bundle --file=Brewfile
 
 > **Note:** macOS uses the `Brewfile` in this repo for package management. On Apple Silicon Macs, Homebrew installs to `/opt/homebrew`. The default shell is already zsh, so no `chsh` step is needed.
 
+For Windows (PowerShell 7):
+
+> **Prerequisites:**
+> - **PowerShell 7+** (`pwsh`) — install with `winget install Microsoft.PowerShell`. Older Windows PowerShell 5.1 is **not** supported.
+> - **Git for Windows** — needed so yazi can use `file` (ships `file.exe` at `ProgramFiles\Git\usr\bin\file.exe`).
+
+```powershell
+# 1. Install chezmoi
+winget install twpayne.chezmoi
+
+# 2. Initialize and apply dotfiles
+#    This will prompt for wezterm_windows_home (e.g. D:\Work) on first run.
+chezmoi init https://github.com/jctaoo/dotfiles.git
+chezmoi apply
+
+# 3. Install all CLI tools from the winget manifest
+chezmoi cd
+winget import -i winget-packages.json --accept-package-agreements --accept-source-agreements
+
+# 4. Install PowerShell modules
+Install-Module -Name PSFzf -Scope CurrentUser
+Install-Module -Name PSReadLine -Scope CurrentUser -Force -SkipPublisherCheck
+Install-Module -Name Microsoft.WinGet.CommandNotFound -Scope CurrentUser
+Install-Module -Name posh-git -Scope CurrentUser
+Install-Module -Name Microsoft.WinGet.Client -Scope CurrentUser
+
+# 5. Install fonts (not in winget — manual install)
+#    Download the zip, extract, right-click each .ttf → "Install for all users":
+#    - Noto Color Emoji:        https://github.com/googlefonts/noto-emoji/releases
+#    - Monaspace Nerd Font:     https://github.com/githubnext/monaspace/releases
+#    - JuliaMono:               https://github.com/cormullion/juliamono/releases
+#    - LXGW WenKai Screen:      https://github.com/lxgw/LxgwWenKai-Screen/releases
+
+# 6. Launch WezTerm
+```
+
+> **Notes:**
+> - `chezmoi apply` automatically sets XDG environment variables (`XDG_CONFIG_HOME`, `YAZI_CONFIG_HOME`, etc.) via a one-time PowerShell script, so tools like yazi and bat resolve Unix-style paths correctly.
+> - The PowerShell profile exports `OPENCODE_ENABLE_EXA=1` for opencode automatically (only when `opencode` is detected in PATH). For the **opencode desktop app** (launched outside the shell), the env var may not be picked up — set it as a **Windows user environment variable** instead:
+>   ```powershell
+>   [System.Environment]::SetEnvironmentVariable("OPENCODE_ENABLE_EXA", "1", "User")
+>   ```
+> - `btop` is intentionally not installed on Windows — use Task Manager or the `Get-Process` cmdlet instead.
+> - The PowerShell profile detects each tool via `Get-Command` and degrades gracefully if anything is missing.
+
 ---
 
 ## Table of Contents

@@ -1,0 +1,30 @@
+{
+  "$schema": "https://aka.ms/winget-packages.schema.2.0.json",
+  "Packages": [
+    { "PackageIdentifier": "Starship.Starship" },
+    { "PackageIdentifier": "twpayne.chezmoi" },
+    { "PackageIdentifier": "wez.wezterm" },
+    { "PackageIdentifier": "sharkdp.bat" },
+    { "PackageIdentifier": "eza-community.eza" },
+    { "PackageIdentifier": "sharkdp.fd" },
+    { "PackageIdentifier": "junegunn.fzf" },
+    { "PackageIdentifier": "BurntSushi.ripgrep.MSVC" },
+    { "PackageIdentifier": "ajeetdsouza.zoxide" },
+    { "PackageIdentifier": "sxyazi.yazi" },
+    { "PackageIdentifier": "Git.Git" },
+    { "PackageIdentifier": "GitHub.cli" },
+    { "PackageIdentifier": "dandavison.delta" },
+    { "PackageIdentifier": "JesseDuffield.lazygit" },
+    { "PackageIdentifier": "Neovim.Neovim" },
+    { "PackageIdentifier": "Schniz.fnm" },
+    { "PackageIdentifier": "astral-sh.uv" },
+    { "PackageIdentifier": "jqlang.jq" },
+    { "PackageIdentifier": "Fastfetch-cli.Fastfetch" },
+    { "PackageIdentifier": "hpjansson.Chafa" },
+    { "PackageIdentifier": "charmbracelet.glow" },
+    { "PackageIdentifier": "ImageMagick.ImageMagick" },
+    { "PackageIdentifier": "OliverBetz.ExifTool" },
+    { "PackageIdentifier": "7zip.7zip" },
+    { "PackageIdentifier": "SST.opencode" }
+  ]
+}
