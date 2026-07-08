@@ -7,7 +7,7 @@ brew "zsh-autosuggestions"
 brew "zsh-syntax-highlighting"
 brew "starship"
 brew "chezmoi"
-cask "wezterm"
+cask "wezterm@nightly"
 
 # Modern CLI Replacements and File Tools
 brew "bat"
