@@ -48,8 +48,9 @@ group = "git"
 url = "*/"
 run = "git"
 group = "git"
+{{- if ne .chezmoi.os "windows" }}
 
-# Preview plugins
+# Preview plugins (unix only; windows uses built-in default previewers)
 [[plugin.prepend_previewers]]
 url = "*.md"
 run = 'piper -- CLICOLOR_FORCE=1 glow -w=$w -s=dark "$1"'
@@ -57,3 +58,4 @@ run = 'piper -- CLICOLOR_FORCE=1 glow -w=$w -s=dark "$1"'
 [[plugin.prepend_previewers]]
 mime = "text/*"
 run = 'piper -- bat -p --color=always --theme="$([ "$t" = "dark" ] && echo "$BAT_THEME_DARK" || echo "$BAT_THEME_LIGHT")" "$1"'
+{{- end }}
