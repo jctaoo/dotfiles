@@ -158,11 +158,27 @@ function y {
 #----------------------------------------------------------------------
 # opencode settings
 #----------------------------------------------------------------------
-$opencodeCommand = Get-Command -Name opencode -CommandType Application -ErrorAction SilentlyContinue
-if ($opencodeCommand) {
+# npm 的 shim 目录里同时有 opencode.cmd 和给 git-bash 用的无扩展名脚本，
+# fnm 又给每个 shell 建独立的 shim 目录，所以 Get-Command 会命中多个 Application。
+# 取 .Source 得到的是数组，& 会把整串路径拼成一个命令名，因此这里只挑单个 Windows 可执行文件。
+function Get-OpenCodeApplication {
+    Get-Command -Name opencode -CommandType Application -ErrorAction SilentlyContinue |
+        Where-Object { $_.Extension -in '.exe', '.cmd', '.bat' } |
+        Select-Object -First 1
+}
+
+if (Get-OpenCodeApplication) {
     $env:OPENCODE_ENABLE_EXA = "1"
+
     function opencode {
-        & $opencodeCommand.Source @args
+        # fnm 切换 Node 版本会换掉 shim 目录，所以每次调用重新解析目标
+        $application = Get-OpenCodeApplication
+        if (-not $application) {
+            Write-Error "未找到 opencode 可执行文件，请先安装：npm install -g opencode-ai"
+            return
+        }
+
+        & $application.Source @args
         Write-Host -NoNewline "`e]104`a`e]110`a`e]111`a`e]112`a"
     }
 }
