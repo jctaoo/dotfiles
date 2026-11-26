@@ -182,3 +182,24 @@ if (Get-OpenCodeApplication) {
         Write-Host -NoNewline "`e]104`a`e]110`a`e]111`a`e]112`a"
     }
 }
+
+#----------------------------------------------------------------------
+# Antigravity CLI (agy)
+#----------------------------------------------------------------------
+function agy {
+    $application = Get-Command -Name agy -CommandType Application -TotalCount 1 -ErrorAction SilentlyContinue
+    if (-not $application) {
+        Write-Error '未找到 agy 可执行文件，请确认 Antigravity CLI 已安装并位于 PATH 中。'
+        return
+    }
+
+    try {
+        & $application.Source @args
+    }
+    finally {
+        if ($env:HC_TERMINAL_ID) {
+            # 退出后清除 Herdr 保留的根级代理状态。
+            [Console]::Write("`e]7501;state=clear`e\")
+        }
+    }
+}
